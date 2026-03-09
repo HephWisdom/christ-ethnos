@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 const navLinks = ['About', 'Sermons', 'Events', 'Give', 'FAQ']
 
@@ -9,15 +9,7 @@ function routeHref(label) {
 }
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40)
-    window.addEventListener('scroll', onScroll)
-    onScroll()
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
 
   const renderNavLabel = (label) => (
     <>
@@ -29,11 +21,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? 'bg-transparent backdrop-blur-sm border-b border-bone/10 opacity-100'
-            : 'bg-transparent border-b border-bone/10 opacity-100'
-        }`}
+        className="fixed top-0 left-0 right-0 z-50 bg-void/35 backdrop-blur-md border-b border-bone/15"
       >
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-5 flex items-center justify-between">
           <a
@@ -70,7 +58,7 @@ export default function Navbar() {
       </nav>
 
       {menuOpen && (
-        <div className="fixed inset-0 z-40 bg-void/97 flex flex-col items-center justify-center gap-8">
+        <div className="fixed inset-0 z-40 bg-void/55 backdrop-blur-xl flex flex-col items-center justify-center gap-8">
           {navLinks.map((link) => (
                 <a
                   key={link}

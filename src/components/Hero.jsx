@@ -5,7 +5,7 @@ export default function Hero() {
   const heroRef = useRef(null)
 
   return (
-    <section id="home" className="relative min-h-screen flex flex-col overflow-hidden bg-void">
+    <section id="home" className="relative min-h-[130vh] flex flex-col overflow-hidden bg-void">
 
       {/* Background image + ember glow and cinematic overlay */}
       <div
@@ -77,19 +77,13 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-20 flex flex-col justify-between min-h-screen px-6 md:px-16 pt-32 pb-16">
+      <div className="relative z-20 flex flex-col justify-between min-h-[130vh] px-6 md:px-16 pt-32 pb-16">
 
-        {/* Top meta row */}
-        <div className="flex items-center justify-between">
-          <span className="meta-label">Online. 2025 • Family of Faith</span>
-          <span className="meta-label">Sat & Sun 11pm GMT Each Day</span>
-        </div>
+      
 
         {/* Central headline */}
         <div className="max-w-4xl mx-auto text-center mt-auto mb-12">
-          <p className="meta-label mb-6 animate-fade-in opacity-0-init" style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}>
-            A sacred space for
-          </p>
+          
           <h1
             className="font-display text-5xl md:text-7xl lg:text-8xl leading-[1.05] text-bone animate-fade-up opacity-0-init"
             style={{ animationFillMode: 'forwards' }}

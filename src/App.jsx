@@ -72,13 +72,13 @@ export default function App() {
     <div className="bg-void min-h-screen">
       <SmoothCursor />
       <AmbientSoundToggle />
+      <Navbar />
 
       <div
         className={`transition-all duration-500 ${
           isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
         }`}
       >
-        <Navbar />
         {route === 'home' && <HomeFlow />}
         {route === 'sermons' && <Sermons />}
         {route === 'events' && <Events />}
