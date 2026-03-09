@@ -5,7 +5,7 @@ export default function Hero() {
   const heroRef = useRef(null)
 
   return (
-    <section id="home" className="relative min-h-[130vh] flex flex-col overflow-hidden bg-void">
+    <section id="home" className="relative min-h-[100vh] flex flex-col overflow-hidden bg-void">
 
       {/* Background image + ember glow and cinematic overlay */}
       <div
@@ -77,7 +77,7 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-20 flex flex-col justify-between min-h-[130vh] px-6 md:px-16 pt-32 pb-16">
+      <div className="relative z-20 flex flex-col justify-between min-h-[110vh] px-6 md:px-16 pt-32 pb-16">
 
       
 
