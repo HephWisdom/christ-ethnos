@@ -10,7 +10,6 @@ import Sermons from './components/Sermons'
 import Events from './components/Events'
 import Give from './components/Give'
 import SmoothCursor from './components/SmoothCursor'
-import AmbientSoundToggle from './components/AmbientSoundToggle'
 
 const PAGE_ROUTES = ['home', 'sermons', 'events', 'give']
 
@@ -71,7 +70,6 @@ export default function App() {
   return (
     <div className="bg-void min-h-screen">
       <SmoothCursor />
-      <AmbientSoundToggle />
       <Navbar />
 
       <div
