@@ -2,8 +2,8 @@ import { useState, useRef, useEffect } from 'react'
 
 const faqs = [
   {
-    q: 'Is Christ Enthos a religious community?',
-    a: "Christ Enthos is a Christian church that welcomes all people, including those with none, little, or complicated faith backgrounds. It's a space built around presence, compassion, and reflection — not doctrine or conversion pressure.",
+    q: 'Is Christ Ēthnos a religious community?',
+    a: "Christ Ēthnos is a Christian church that welcomes all people, including those with none, little, or complicated faith backgrounds. It's a space built around presence, compassion, and reflection — not doctrine or conversion pressure.",
   },
   {
     q: 'What should I expect on my first Service?',
@@ -51,7 +51,7 @@ export default function FAQ() {
             <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-tight text-bone">
               Everything you<br />
               want to know<br />
-              <em className="text-ember-500">before you visit</em>
+              <em className="text-ember-300">before you visit</em>
             </h2>
             <p className="font-body text-bone/45 text-base leading-relaxed mt-8 max-w-sm">
               First visits can feel uncertain. These questions come from
@@ -72,7 +72,7 @@ export default function FAQ() {
                     {faq.q}
                   </span>
                   <span
-                    className={`flex-shrink-0 font-label text-xl text-ember-500 transition-transform duration-300 mt-0.5 ${open === i ? 'rotate-45' : ''}`}
+                    className={`flex-shrink-0 font-label text-xl text-ember-400 transition-transform duration-300 mt-0.5 ${open === i ? 'rotate-45' : ''}`}
                   >
                     +
                   </span>

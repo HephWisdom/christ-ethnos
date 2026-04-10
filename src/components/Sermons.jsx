@@ -74,7 +74,7 @@ export default function Sermons() {
         >
           Listen to recent
           <br />
-          <em className="text-ember-400">preaching</em>
+          <em className="text-ember-300">preaching</em>
         </h1>
 
         <p
@@ -122,7 +122,7 @@ export default function Sermons() {
             >
               (close)
             </button>
-            <div className="aspect-video border border-ember-600/40 shadow-[0_0_40px_rgba(194,65,12,0.25)]">
+            <div className="aspect-video border border-ember-400/35 shadow-[0_0_40px_rgba(162,114,76,0.18)]">
               <iframe
                 title="Sermon player"
                 src={active}

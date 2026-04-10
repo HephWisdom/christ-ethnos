@@ -82,10 +82,10 @@ export default function Events() {
           {events.map((event, i) => (
             <article
               key={event.title + event.date}
-              className="relative border border-bone/12 bg-ash/70 px-8 py-10 transition-all duration-500 hover:border-ember-700/70"
+              className="relative border border-bone/12 bg-ash/85 px-8 py-10 transition-all duration-500 hover:border-ember-500/55"
               style={{ animationDelay: `${i * 90}ms` }}
             >
-              <p className="font-display text-[4.5rem] leading-none text-ember-600">{event.date}</p>
+              <p className="font-display text-[4.5rem] leading-none text-ember-400">{event.date}</p>
               <p className="font-label uppercase tracking-[0.3em] text-sm text-bone/45 mt-2">{event.month}</p>
               <h2 className="font-display text-3xl md:text-4xl mt-8 text-bone leading-tight">{event.title}</h2>
               <p className="meta-label mt-5">{event.location}</p>

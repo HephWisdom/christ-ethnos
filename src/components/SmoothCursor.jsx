@@ -48,7 +48,7 @@ export default function SmoothCursor() {
           width: hover ? 28 : 8,
           height: hover ? 28 : 8,
           transform: 'translate(-50%, -50%)',
-          background: hover ? 'rgba(245, 240, 232, 0.15)' : 'transparent',
+          background: hover ? 'rgba(244, 238, 228, 0.15)' : 'transparent',
         }}
       />
       <div

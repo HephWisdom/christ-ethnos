@@ -7,20 +7,20 @@ const testimonials = [
   {
     name: 'Marcus & Leila T.',
     location: 'East Side, joined 2021',
-    story: 'The moment I found Christ Enthos',
+    story: 'The moment I found Christ Ēthnos',
     body: "I'd been carrying so much for so long. The first Sunday I walked in, something loosened. No performance, no judgment — just an open door. Now I can't imagine Sundays without it.",
   },
   {
     name: 'Adaeze O.',
     location: 'Northgate, joined 2019',
     story: 'I found a family',
-    body: "Moving to a new city, I was completely alone. Christ Enthos gave me not just a community but people who actually showed up — in the hard moments and the good ones.",
+    body: "Moving to a new city, I was completely alone. Christ Ēthnos gave me not just a community but people who actually showed up — in the hard moments and the good ones.",
   },
   {
     name: 'David R.',
     location: 'Westbrook, joined 2023',
     story: 'Faith without the fear',
-    body: "I grew up with a very different idea of church. Christ Enthos showed me that faith could be gentle, that doubt was welcome, and that grace was genuinely unconditional.",
+    body: "I grew up with a very different idea of church. Christ Ēthnos showed me that faith could be gentle, that doubt was welcome, and that grace was genuinely unconditional.",
   },
 ]
 
@@ -52,14 +52,14 @@ export default function Testimonials() {
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(180deg, rgba(8,8,8,0.28) 0%, rgba(8,8,8,0.65) 52%, #080808 100%)',
+              'linear-gradient(180deg, rgba(4,5,5,0.28) 0%, rgba(4,5,5,0.65) 52%, #040505 100%)',
           }}
         />
       </div>
 
       {/* Ambient side glow */}
       <div className="absolute left-0 top-1/2 -translate-y-1/2 w-64 h-96 rounded-full blur-[120px] opacity-20"
-        style={{ background: 'radial-gradient(circle, #c2410c, transparent)' }}
+        style={{ background: 'radial-gradient(circle, rgba(188, 140, 97, 0.42), transparent 72%)' }}
       />
 
       <div className="max-w-[1400px] mx-auto px-6 md:px-16">
@@ -80,7 +80,7 @@ export default function Testimonials() {
                 key={i}
                 onClick={() => setActive(i)}
                 className={`flex items-center gap-4 p-4 border transition-all duration-300 text-left group ${
-                  active === i ? 'border-ember-700 bg-ember-950/30' : 'border-bone/10 hover:border-bone/20'
+                  active === i ? 'border-ember-500/70 bg-ember-950/45' : 'border-bone/10 hover:border-bone/20'
                 }`}
               >
                 {/* Avatar (CSS circle with initials) */}
@@ -127,7 +127,7 @@ export default function Testimonials() {
                     <button
                       key={i}
                       onClick={() => setActive(i)}
-                      className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${active === i ? 'bg-ember-500 w-6' : 'bg-bone/20'}`}
+                      className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${active === i ? 'bg-ember-400 w-6' : 'bg-bone/20'}`}
                     />
                   ))}
               </div>
@@ -141,7 +141,7 @@ export default function Testimonials() {
           </div>
            {/* Ember glow right */}
       <div className="absolute left-0 bottom-1/2 -translate-y-1/2 w-96 h-96 blur-[160px] opacity-10 pointer-events-none"
-        style={{ background: '#c2410c' }}
+        style={{ background: 'rgba(162, 114, 76, 0.45)' }}
       />
         </div>
       </div>

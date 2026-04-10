@@ -37,14 +37,14 @@ export default function Give() {
         <h1 className="font-display text-5xl md:text-6xl text-bone mt-5 mb-8 leading-tight">
           Every gift is a
           <br />
-          <em className="text-ember-500">quiet invitation</em>
+          <em className="text-ember-300">quiet invitation</em>
         </h1>
 
         <blockquote className="mx-auto max-w-2xl text-bone/75 text-xl md:text-2xl italic font-body leading-relaxed">
           "Each of you should give what you have decided in your heart to give, not reluctantly or
           under compulsion, for God loves a cheerful giver."
         </blockquote>
-        <cite className="mt-4 block font-label tracking-[0.2em] text-sm text-ember-500 uppercase">
+        <cite className="mt-4 block font-label tracking-[0.2em] text-sm text-ember-300 uppercase">
           2 Corinthians 9:7
         </cite>
 
@@ -55,7 +55,7 @@ export default function Give() {
               onClick={() => setSelected(amount)}
               className={`text-left border p-4 text-center transition-all duration-300 ${
                 selected === amount
-                  ? 'border-ember-600 bg-ember-950/40'
+                  ? 'border-ember-400 bg-ember-950/45 shadow-[0_0_24px_rgba(162,114,76,0.14)]'
                   : 'border-bone/20 hover:border-bone/35'
               }`}
             >

@@ -30,14 +30,14 @@ export default function About() {
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(180deg, rgba(8,8,8,0.28) 0%, rgba(8,8,8,0.7) 52%, #080808 100%)',
+              'linear-gradient(180deg, rgba(4,5,5,0.3) 0%, rgba(4,5,5,0.68) 52%, #040505 100%)',
           }}
         />
       </div>
 
       {/* Ambient side glow */}
       <div className="absolute left-0 top-1/2 -translate-y-1/2 w-64 h-96 rounded-full blur-[120px] opacity-20"
-        style={{ background: 'radial-gradient(circle, #c2410c, transparent)' }}
+        style={{ background: 'radial-gradient(circle, rgba(188, 140, 97, 0.45), transparent 72%)' }}
       />
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-16">
@@ -57,7 +57,7 @@ export default function About() {
 
             {/* Architectural illustration with real image treatment */}
             <div className="relative w-full aspect-[3/4] mb-8 overflow-hidden"
-              style={{ background: 'linear-gradient(180deg, #111 0%, #1a0800 100%)' }}
+              style={{ background: 'linear-gradient(180deg, #090b0b 0%, #1d1613 100%)' }}
             >
               <img
                 src={aboutZoom}
@@ -70,25 +70,25 @@ export default function About() {
                 className="absolute inset-0"
                 style={{
                   background:
-                    'linear-gradient(180deg, rgba(8,8,8,0.25) 0%, rgba(8,8,8,0.8) 100%)',
+                    'linear-gradient(180deg, rgba(4,5,5,0.25) 0%, rgba(4,5,5,0.8) 100%)',
                   mixBlendMode: 'multiply',
                 }}
               />
               {/* Arch */}
               <div className="absolute inset-x-1/4 top-6 bottom-0"
                 style={{
-                  borderTop: '1px solid rgba(245,240,232,0.15)',
-                  borderLeft: '1px solid rgba(245,240,232,0.12)',
-                  borderRight: '1px solid rgba(245,240,232,0.12)',
+                  borderTop: '1px solid rgba(244,238,228,0.15)',
+                  borderLeft: '1px solid rgba(244,238,228,0.12)',
+                  borderRight: '1px solid rgba(244,238,228,0.12)',
                   borderRadius: '50% 50% 0 0 / 30% 30% 0 0',
                 }}
               />
               {/* Inner arch */}
               <div className="absolute inset-x-[30%] top-12 bottom-0"
                 style={{
-                  borderTop: '1px solid rgba(245,240,232,0.08)',
-                  borderLeft: '1px solid rgba(245,240,232,0.06)',
-                  borderRight: '1px solid rgba(245,240,232,0.06)',
+                  borderTop: '1px solid rgba(244,238,228,0.08)',
+                  borderLeft: '1px solid rgba(244,238,228,0.06)',
+                  borderRight: '1px solid rgba(244,238,228,0.06)',
                   borderRadius: '50% 50% 0 0 / 30% 30% 0 0',
                 }}
               />
@@ -102,19 +102,19 @@ export default function About() {
                     left: `${28 + i * 6}%`,
                     width: '2px',
                     height: `${35 + Math.abs(4 - i) * 8}%`,
-                    background: `rgba(245,240,232,${0.06 + i * 0.01})`,
+                    background: `rgba(244,238,228,${0.06 + i * 0.01})`,
                   }}
                 />
               ))}
               {/* Glow at top of arch */}
               <div className="absolute top-4 left-1/2 -translate-x-1/2 w-12 h-6 rounded-full blur-xl opacity-40 animate-glow-pulse"
-                style={{ background: '#fbbf24' }}
+                style={{ background: '#e6c89b' }}
               />
             </div>
 
             {/* Small body text */}
             <p className="font-body text-sm text-bone/40 leading-relaxed">
-              Christ Enthos is more than a church, it's a Family.
+              Christ Ēthnos is more than a church, it's a Family.
               A place to slow down, listen deeply, and find something
               greater yet deeply human.
             </p>
@@ -129,7 +129,7 @@ export default function About() {
             <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.1] text-bone">
               Where faith,
               <br />
-              <em className="text-ember-500">Family,</em>
+              <em className="text-ember-300">Family,</em>
               <br />
               and grace meet
               <br />
@@ -144,7 +144,7 @@ export default function About() {
               belong together.
             </p>
 
-            <button className="btn-bracket mt-10">(about Christ Enthos)</button>
+            <button className="btn-bracket mt-10">(about Christ Ēthnos)</button>
           </div>
 
           {/* Right — stat blocks */}
@@ -155,7 +155,7 @@ export default function About() {
               { num: '14', label: 'Community programs', note: 'Serving the city' },
             ].map(({ num, label, note }) => (
               <div key={num} className="border-t border-bone/10 pt-6">
-                <p className="font-display text-3xl text-ember-400">{num}</p>
+                <p className="font-display text-3xl text-ember-300">{num}</p>
                 <p className="meta-label mt-1">{label}</p>
                 <p className="font-body text-xs text-bone/30 mt-1 italic">{note}</p>
               </div>

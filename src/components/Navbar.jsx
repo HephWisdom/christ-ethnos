@@ -28,7 +28,7 @@ export default function Navbar() {
             href="#home"
             className="font-label tracking-[0.3em] text-sm text-bone/90 uppercase hover:text-ember-400 transition-colors"
           >
-            Christ Enthos
+            Christ Ēthnos
           </a>
 
           <ul className="hidden md:flex items-center gap-10">

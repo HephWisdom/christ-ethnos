@@ -44,20 +44,19 @@ export default function DailyWord() {
       <div className="absolute inset-0 z-0"
         style={{
           background: `
-            radial-gradient(ellipse 100% 80% at 50% -20%, #c24f0c 0%, #7c3c12 30%, transparent 60%),
-            radial-gradient(ellipse 80% 60% at 50% 120%, #ea580c 0%, #c2410c 20%, transparent 50%),
-            radial-gradient(ellipse 60% 40% at 45% 110%, #fb7a24 0%, transparent 40%),
-            #080808
+            radial-gradient(ellipse 72% 48% at 50% 0%, rgba(230, 200, 155, 0.22) 0%, rgba(162, 114, 76, 0.16) 28%, transparent 62%),
+            radial-gradient(ellipse 92% 66% at 50% 120%, rgba(72, 48, 36, 0.62) 0%, rgba(33, 22, 18, 0.28) 34%, transparent 62%),
+            #040505
           `,
         }}
       >
         <img
           src={bibleImage}
           alt="Bible-themed background"
-          className="absolute inset-0 h-full w-full object-cover opacity-40"
+          className="absolute inset-0 h-full w-full object-cover opacity-28"
           style={{ mixBlendMode: 'soft-light' }}
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,8,8,0.4),rgba(8,8,8,0.88))]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,5,5,0.38),rgba(4,5,5,0.9))]" />
       </div>
 
       {/* Atmospheric fog layer */}
@@ -65,14 +64,14 @@ export default function DailyWord() {
         className="absolute bottom-0 left-0 right-0 h-3/4 z-0 animate-drift opacity-35 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 120% 60% at 50% 100%, rgba(194,65,12,0.2) 0%, transparent 65%)
+            radial-gradient(ellipse 120% 60% at 50% 100%, rgba(162, 114, 76, 0.18) 0%, transparent 65%)
           `,
         }}
       />
 
       {/* Top ember glow accent */}
       <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[700px] h-[350px] blur-3xl opacity-20 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse, #c2550c, #eadb0c 40%, transparent)' }}
+        style={{ background: 'radial-gradient(ellipse, rgba(230, 200, 155, 0.42), rgba(162, 114, 76, 0.18) 42%, transparent 72%)' }}
       />
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-16">
@@ -91,27 +90,27 @@ export default function DailyWord() {
             <div
               className="relative w-72 rounded-3xl overflow-hidden shadow-2xl"
               style={{
-                background: `linear-gradient(135deg, #1a0800 0%, #7c2d12 35%, #c2410c 65%, #ea580c 100%)`,
+                background: 'linear-gradient(145deg, #090b0b 0%, #2b211b 36%, #6a4b37 70%, #bc8c61 100%)',
                 padding: '2px',
-                boxShadow: '0 20px 60px rgba(194, 65, 12, 0.4), 0 0 80px rgba(234, 88, 12, 0.25)',
+                boxShadow: '0 24px 70px rgba(0, 0, 0, 0.55), 0 0 80px rgba(188, 140, 97, 0.18)',
               }}
             >
               <div
                 className="relative rounded-3xl overflow-hidden h-full backdrop-blur-sm"
                 style={{
-                  background: `linear-gradient(135deg, #150600 0%, #7c2d1250 50%, #8b1a1a 75%, #6b1612 100%)`
+                  background: 'linear-gradient(145deg, rgba(6,7,7,0.96) 0%, rgba(33,22,18,0.92) 55%, rgba(72,48,36,0.88) 100%)',
                 }}
               >
                 <img
                   src={bibleImage}
                   alt="Meditative prayer scene"
-                  className="absolute inset-0 h-full w-full object-cover mix-blend-screen opacity-60"
+                  className="absolute inset-0 h-full w-full object-cover mix-blend-screen opacity-36"
                 />
-                <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(8,8,8,0.45),rgba(8,8,8,0.75))]" />
+                <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(4,5,5,0.45),rgba(4,5,5,0.75))]" />
                 <div
                   className="absolute inset-0"
                   style={{
-                    background: `radial-gradient(ellipse at 50% 0%, rgba(234,88,12,0.15), transparent 60%)`
+                    background: 'radial-gradient(ellipse at 50% 0%, rgba(230, 200, 155, 0.12), transparent 60%)',
                   }}
                 />
                 {/* Status bar */}
@@ -126,8 +125,8 @@ export default function DailyWord() {
 
                 {/* App header */}
                 <div className="flex items-center justify-between px-6 py-3">
-                  <span className="font-label tracking-[0.2em] text-sm text-bone/90 uppercase">Christ Enthos</span>
-                  <span className="btn-bracket text-xs py-1 px-3" style={{ borderColor: 'rgba(245,240,232,0.3)', fontStyle: 'italic' }}>(menu)</span>
+                  <span className="font-label tracking-[0.2em] text-sm text-bone/90 uppercase">Christ Ēthnos</span>
+                  <span className="btn-bracket text-xs py-1 px-3" style={{ borderColor: 'rgba(244,238,228,0.3)', fontStyle: 'italic' }}>(menu)</span>
                 </div>
 
                 {/* Meta */}
@@ -173,7 +172,7 @@ export default function DailyWord() {
             <h2 className="font-display text-4xl md:text-5xl leading-tight text-bone mb-8 animate-fade-in">
               A word for
               <br />
-              <em className="text-ember-400 drop-shadow-lg">every morning</em>
+              <em className="text-ember-300 drop-shadow-lg">every morning</em>
             </h2>
 
             <p className="font-body text-bone/50 text-base leading-relaxed max-w-md mb-12 animate-fade-in" style={{ animationDelay: '200ms' }}>
@@ -189,11 +188,11 @@ export default function DailyWord() {
                   onClick={() => setActive(i)}
                   className={`text-left p-5 border transition-all duration-300 backdrop-blur-sm ${
                     active === i
-                      ? 'border-ember-500 bg-gradient-to-r from-ember-950/60 to-ember-900/30 shadow-lg shadow-ember-600/20'
-                      : 'border-bone/10 hover:border-ember-400/40 hover:bg-ember-950/20'
+                      ? 'border-ember-400 bg-gradient-to-r from-ember-950/80 to-ember-900/40 shadow-lg shadow-ember-900/30'
+                      : 'border-bone/10 hover:border-ember-300/35 hover:bg-ember-950/25'
                   }`}
                 >
-                  <p className="meta-label text-ember-400/90 mb-1 font-semibold">{v.ref}</p>
+                  <p className="meta-label text-ember-300/90 mb-1 font-semibold">{v.ref}</p>
                   <p className="font-body text-sm text-bone/70 leading-relaxed line-clamp-2 italic">
                     "{v.quote}"
                   </p>
@@ -201,7 +200,7 @@ export default function DailyWord() {
               ))}
             </div>
 
-            <button className="btn-bracket-glow mt-10 transition-all duration-300 hover:shadow-lg hover:shadow-ember-500/50">(subscribe to daily word)</button>
+            <button className="btn-bracket-glow mt-10 transition-all duration-300 hover:shadow-lg hover:shadow-ember-800/40">(subscribe to daily word)</button>
           </div>
         </div>
       </div>
