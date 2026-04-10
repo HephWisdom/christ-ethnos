@@ -1,5 +1,79 @@
 import scriptureImage from '../assets/scripture-image.png'
 
+const socialLinks = [
+  {
+    name: 'Instagram',
+    href: '#',
+    accentClass: 'hover:border-[#ee2a7b]/70 hover:bg-[#ee2a7b]/10',
+    icon: (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 sm:h-[18px] sm:w-[18px]">
+        <defs>
+          <linearGradient id="instagramGradient" x1="4" y1="20" x2="20" y2="4" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#f9ce34" />
+            <stop offset="38%" stopColor="#ee2a7b" />
+            <stop offset="72%" stopColor="#6228d7" />
+            <stop offset="100%" stopColor="#4f5bd5" />
+          </linearGradient>
+        </defs>
+        <rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="url(#instagramGradient)" strokeWidth="1.8" />
+        <circle cx="12" cy="12" r="4" fill="none" stroke="url(#instagramGradient)" strokeWidth="1.8" />
+        <circle cx="17.2" cy="6.8" r="1.1" fill="#f9ce34" />
+      </svg>
+    ),
+  },
+  {
+    name: 'YouTube',
+    href: '#',
+    accentClass: 'hover:border-[#ff0033]/70 hover:bg-[#ff0033]/10',
+    icon: (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 sm:h-[18px] sm:w-[18px]">
+        <path
+          d="M21 12.2c0 2.3-.3 4-.6 5-.2.9-.9 1.6-1.8 1.8-1 .3-3.4.6-6.6.6s-5.6-.3-6.6-.6c-.9-.2-1.6-.9-1.8-1.8-.3-1-.6-2.7-.6-5s.3-4 .6-5c.2-.9.9-1.6 1.8-1.8 1-.3 3.4-.6 6.6-.6s5.6.3 6.6.6c.9.2 1.6.9 1.8 1.8.3 1 .6 2.7.6 5Z"
+          fill="#ff0033"
+        />
+        <path d="m10 9 5 3-5 3V9Z" fill="#ffffff" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Facebook',
+    href: '#',
+    accentClass: 'hover:border-[#1877f2]/70 hover:bg-[#1877f2]/10',
+    icon: (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 sm:h-[18px] sm:w-[18px]">
+        <circle cx="12" cy="12" r="9" fill="#1877f2" />
+        <path
+          d="M13.6 19v-5.6h1.9l.3-2.2h-2.2V9.8c0-.7.2-1.2 1.2-1.2H16V6.7c-.2 0-.9-.1-1.7-.1-1.7 0-2.8 1-2.8 3v1.6H9.8v2.2h1.7V19h2.1Z"
+          fill="#ffffff"
+        />
+      </svg>
+    ),
+  },
+  {
+    name: 'TikTok',
+    href: '#',
+    accentClass: 'hover:border-[#25f4ee]/70 hover:bg-[#25f4ee]/10',
+    icon: (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 sm:h-[18px] sm:w-[18px]">
+        <path
+          d="M14.5 5c.7 1.3 1.8 2.2 3.5 2.5v2.2a6.4 6.4 0 0 1-3.5-1v4.9a4.5 4.5 0 1 1-4.5-4.5c.3 0 .6 0 .9.1v2.2a2.5 2.5 0 1 0 1.6 2.3V5h2Z"
+          fill="#25f4ee"
+          transform="translate(-0.45 0.3)"
+        />
+        <path
+          d="M14.5 5c.7 1.3 1.8 2.2 3.5 2.5v2.2a6.4 6.4 0 0 1-3.5-1v4.9a4.5 4.5 0 1 1-4.5-4.5c.3 0 .6 0 .9.1v2.2a2.5 2.5 0 1 0 1.6 2.3V5h2Z"
+          fill="#fe2c55"
+          transform="translate(0.45 -0.3)"
+        />
+        <path
+          d="M14.5 5c.7 1.3 1.8 2.2 3.5 2.5v2.2a6.4 6.4 0 0 1-3.5-1v4.9a4.5 4.5 0 1 1-4.5-4.5c.3 0 .6 0 .9.1v2.2a2.5 2.5 0 1 0 1.6 2.3V5h2Z"
+          fill="#ffffff"
+        />
+      </svg>
+    ),
+  },
+]
+
 export default function Footer() {
   return (
     <footer className="relative bg-void overflow-hidden">
@@ -44,16 +118,27 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-bone/8 py-8 px-6 md:px-16">
-        <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <span className="font-label tracking-[0.3em] text-xs text-bone/30 uppercase">Christ Ēthnos</span>
-          <div className="flex items-center gap-8">
-            {['Instagram', 'YouTube', 'Podcast', 'Newsletter'].map((link) => (
-              <a key={link} href="#" className="meta-label hover:text-bone/70 transition-colors">
-                {link}
+        <div className="max-w-[1400px] mx-auto flex flex-col items-center justify-between gap-5 md:flex-row md:gap-8">
+          <span className="text-center font-label tracking-[0.3em] text-xs text-bone/30 uppercase md:text-left">
+            Christ Ēthnos
+          </span>
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
+            {socialLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                aria-label={link.name}
+                title={link.name}
+                className={`group flex h-10 w-10 items-center justify-center rounded-full border border-bone/12 bg-bone/[0.03] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(255,255,255,0.08)] sm:h-11 sm:w-11 ${link.accentClass}`}
+              >
+                {link.icon}
+                <span className="sr-only">{link.name}</span>
               </a>
             ))}
           </div>
-          <span className="font-body text-xs text-bone/20 italic">{new Date().getFullYear()} · All are welcome</span>
+          <span className="text-center font-body text-xs text-bone/20 italic md:text-right">
+            {new Date().getFullYear()} · All are welcome
+          </span>
         </div>
       </div>
     </footer>

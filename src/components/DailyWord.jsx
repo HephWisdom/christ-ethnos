@@ -1,23 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import bibleImage from '../assets/bible-image.png'
-
-const verses = [
-  {
-    ref: 'Isaiah 41:10',
-    quote: 'Do not fear, for I am with you; do not be dismayed, for I am your God. I will strengthen you and help you.',
-    meditation: 'In stillness you discover that you were never alone. The fear you carry has no claim on a heart surrendered to grace.',
-  },
-  {
-    ref: 'Psalm 46:10',
-    quote: 'Be still, and know that I am God.',
-    meditation: 'Silence is not emptiness — it is fullness waiting to be recognized. When you stop striving, you begin to receive.',
-  },
-  {
-    ref: 'Romans 8:38–39',
-    quote: 'Neither death nor life, neither angels nor demons, can separate us from the love of God.',
-    meditation: 'Love this complete asks nothing more of you than to rest in it. You are held not by what you do, but by who He is.',
-  },
-]
+import { dailyWordFallback } from '../../shared/content.js'
+import { useContentCollection } from '../hooks/useContentCollection.js'
 
 function useInView(threshold = 0.15) {
   const ref = useRef(null)
@@ -33,10 +17,17 @@ function useInView(threshold = 0.15) {
 export default function DailyWord() {
   const [active, setActive] = useState(0)
   const [ref, inView] = useInView()
+  const { items: verses } = useContentCollection('/api/daily-word', dailyWordFallback)
 
   const now = new Date()
   const dayStr = now.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric' })
-  const verse = verses[active]
+  const verse = verses[active] ?? dailyWordFallback[0]
+
+  useEffect(() => {
+    if (active > verses.length - 1) {
+      setActive(0)
+    }
+  }, [active, verses.length])
 
   return (
     <section id="daily-word" ref={ref} className="relative py-28 md:py-40 overflow-hidden bg-void">

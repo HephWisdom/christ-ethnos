@@ -1,35 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-
-const sermons = [
-  {
-    title: 'The Church of Small Things',
-    speaker: 'Pastor Ruth Adebayo',
-    date: 'April 28, 2026',
-    duration: '38:14',
-    videoId: 'dQw4w9WgXcQ',
-  },
-  {
-    title: 'When Grace Is the First Word',
-    speaker: 'Rev. Samuel Hart',
-    date: 'April 21, 2026',
-    duration: '41:02',
-    videoId: 'jNQXAC9IVRw',
-  },
-  {
-    title: 'Listening Before Leading',
-    speaker: 'Minister Grace Ofori',
-    date: 'April 14, 2026',
-    duration: '36:55',
-    videoId: '9bZkp7q19f0',
-  },
-  {
-    title: 'A People Who Stay',
-    speaker: 'Dean Nkem Okafor',
-    date: 'April 07, 2026',
-    duration: '29:37',
-    videoId: '3JZ_D3ELwOQ',
-  },
-]
+import { sermonFallback } from '../../shared/content.js'
+import { useContentCollection } from '../hooks/useContentCollection.js'
 
 function useInView(threshold = 0.15) {
   const ref = useRef(null)
@@ -53,6 +24,7 @@ function useInView(threshold = 0.15) {
 export default function Sermons() {
   const [ref, inView] = useInView()
   const [active, setActive] = useState(null)
+  const { items: sermons } = useContentCollection('/api/sermons', sermonFallback)
 
   return (
     <main id="sermons" className="min-h-screen bg-ash pt-28 md:pt-36 pb-24">

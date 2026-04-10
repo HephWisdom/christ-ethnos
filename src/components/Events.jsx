@@ -1,43 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-
-const events = [
-  {
-    date: '08',
-    month: 'May',
-    title: 'Community Communion',
-    location: 'West End Sanctuary — 6:00pm',
-  },
-  {
-    date: '14',
-    month: 'May',
-    title: 'Women of Grace Gathering',
-    location: 'Rivers Hall — 3:30pm',
-  },
-  {
-    date: '21',
-    month: 'May',
-    title: 'Open Night & Prayer',
-    location: 'North Terrace — 7:00pm',
-  },
-  {
-    date: '28',
-    month: 'May',
-    title: 'Children\'s Choir Rehearsal',
-    location: 'Choir Studio — 4:00pm',
-  },
-  {
-    date: '02',
-    month: 'Jun',
-    title: 'Neighborhood Food Basket Drive',
-    location: 'South Garden — 10:00am',
-  },
-  {
-    date: '09',
-    month: 'Jun',
-    title: 'Evening of Prayerful Silence',
-    location: 'Main Nave — 8:00pm',
-  },
-]
+import { eventFallback } from '../../shared/content.js'
+import { useContentCollection } from '../hooks/useContentCollection.js'
 
 function useInView(threshold = 0.15) {
   const ref = useRef(null)
@@ -60,6 +23,7 @@ function useInView(threshold = 0.15) {
 
 export default function Events() {
   const [ref, inView] = useInView()
+  const { items: events } = useContentCollection('/api/events', eventFallback)
 
   return (
     <section id="events" ref={ref} className="min-h-screen bg-void pt-28 md:pt-36 pb-28">
