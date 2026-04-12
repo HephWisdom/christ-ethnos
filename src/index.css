@@ -83,6 +83,44 @@
   .page-shell {
     @apply transition-all duration-500;
   }
+
+  .field-shell {
+    @apply flex flex-col gap-2 border border-bone/10 bg-bone/[0.03] p-4;
+  }
+
+  .field-input {
+    @apply bg-transparent text-bone placeholder:text-bone/20 outline-none;
+    font-size: 1rem;
+  }
+
+  .field-textarea {
+    @apply bg-transparent text-bone placeholder:text-bone/20 outline-none resize-y;
+    font-size: 1rem;
+  }
+
+  .form-status {
+    @apply border px-4 py-3 font-body text-sm leading-relaxed;
+  }
+
+  .form-status-success {
+    @apply border-emerald-500/35 bg-emerald-500/10 text-emerald-100;
+  }
+
+  .form-status-error {
+    @apply border-rose-500/35 bg-rose-500/10 text-rose-100;
+  }
+
+  .whatsapp-dot {
+    @apply h-3 w-3 rounded-full border border-white/10;
+  }
+
+  .whatsapp-dot-live {
+    @apply bg-emerald-400 shadow-[0_0_18px_rgba(52,211,153,0.65)];
+  }
+
+  .whatsapp-dot-muted {
+    @apply bg-bone/20;
+  }
 }
 
 /* ─── Animations ────────────────────────────────────── */

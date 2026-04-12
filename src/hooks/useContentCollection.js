@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { buildApiUrl } from '../lib/api.js'
+import { apiRequest } from '../lib/api.js'
 
 export function useContentCollection(pathname, fallbackItems) {
   const [items, setItems] = useState(fallbackItems)
@@ -10,15 +10,9 @@ export function useContentCollection(pathname, fallbackItems) {
 
     async function loadCollection() {
       try {
-        const response = await fetch(buildApiUrl(pathname), {
+        const payload = await apiRequest(pathname, {
           signal: controller.signal,
         })
-
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`)
-        }
-
-        const payload = await response.json()
 
         if (!cancelled && Array.isArray(payload.items)) {
           setItems(payload.items.length ? payload.items : fallbackItems)

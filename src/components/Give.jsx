@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { apiRequest } from '../lib/api.js'
 
 const amounts = [10, 25, 50, 100, 250]
 
@@ -24,6 +25,54 @@ function useInView(threshold = 0.2) {
 export default function Give() {
   const [ref, inView] = useInView()
   const [selected, setSelected] = useState(amounts[1])
+  const [customAmount, setCustomAmount] = useState('')
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    frequency: 'one-time',
+    note: '',
+  })
+  const [status, setStatus] = useState({ tone: 'idle', message: '' })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const effectiveAmount = Number(customAmount) > 0 ? Number(customAmount) : selected
+
+  async function handleSubmit(event) {
+    event.preventDefault()
+    setIsSubmitting(true)
+    setStatus({ tone: 'idle', message: '' })
+
+    try {
+      await apiRequest('/api/giving-intents', {
+        method: 'POST',
+        body: JSON.stringify({
+          ...form,
+          amount: effectiveAmount,
+        }),
+      })
+
+      setStatus({
+        tone: 'success',
+        message: 'Giving intent saved. Your finance team can now follow up from the database.',
+      })
+      setForm({
+        name: '',
+        email: '',
+        phone: '',
+        frequency: 'one-time',
+        note: '',
+      })
+      setCustomAmount('')
+    } catch (error) {
+      setStatus({
+        tone: 'error',
+        message: error.message,
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <main id="give" className="min-h-screen bg-ash pt-28 md:pt-36 pb-24">
@@ -52,6 +101,7 @@ export default function Give() {
           {amounts.map((amount) => (
             <button
               key={amount}
+              type="button"
               onClick={() => setSelected(amount)}
               className={`text-left border p-4 text-center transition-all duration-300 ${
                 selected === amount
@@ -65,7 +115,84 @@ export default function Give() {
           ))}
         </div>
 
-        <button className="mt-10 btn-bracket-glow">(give today)</button>
+        <form onSubmit={handleSubmit} className="mx-auto mt-12 grid max-w-3xl gap-4 text-left md:grid-cols-2">
+          <label className="field-shell md:col-span-2">
+            <span className="meta-label">Custom Amount</span>
+            <input
+              className="field-input"
+              type="number"
+              min="1"
+              placeholder={`Current selection: $${selected}`}
+              value={customAmount}
+              onChange={(event) => setCustomAmount(event.target.value)}
+            />
+          </label>
+          <label className="field-shell">
+            <span className="meta-label">Name</span>
+            <input
+              className="field-input"
+              value={form.name}
+              onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
+              placeholder="Your full name"
+              required
+            />
+          </label>
+          <label className="field-shell">
+            <span className="meta-label">Email</span>
+            <input
+              className="field-input"
+              type="email"
+              value={form.email}
+              onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
+              placeholder="you@example.com"
+              required
+            />
+          </label>
+          <label className="field-shell">
+            <span className="meta-label">Phone</span>
+            <input
+              className="field-input"
+              value={form.phone}
+              onChange={(event) => setForm((current) => ({ ...current, phone: event.target.value }))}
+              placeholder="+233..."
+            />
+          </label>
+          <label className="field-shell">
+            <span className="meta-label">Frequency</span>
+            <select
+              className="field-input"
+              value={form.frequency}
+              onChange={(event) => setForm((current) => ({ ...current, frequency: event.target.value }))}
+            >
+              <option value="one-time">One-time</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </label>
+          <label className="field-shell md:col-span-2">
+            <span className="meta-label">Note</span>
+            <textarea
+              className="field-textarea"
+              value={form.note}
+              onChange={(event) => setForm((current) => ({ ...current, note: event.target.value }))}
+              placeholder="Optional note for the finance team"
+            />
+          </label>
+
+          {status.message && (
+            <p className={`md:col-span-2 form-status ${status.tone === 'error' ? 'form-status-error' : 'form-status-success'}`}>
+              {status.message}
+            </p>
+          )}
+
+          <div className="md:col-span-2 flex flex-wrap items-center gap-4 pt-2">
+            <button className="btn-bracket-glow" disabled={isSubmitting}>
+              {isSubmitting ? '(saving...)' : `(give $${effectiveAmount})`}
+            </button>
+            <span className="font-body text-sm text-bone/35 italic">
+              This stores an intent record in MongoDB. It is not a payment gateway yet.
+            </span>
+          </div>
+        </form>
       </section>
     </main>
   )

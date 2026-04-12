@@ -10,12 +10,37 @@ import Sermons from './components/Sermons'
 import Events from './components/Events'
 import Give from './components/Give'
 import SmoothCursor from './components/SmoothCursor'
+import PrayerRequestSection from './components/PrayerRequestSection'
+import ConnectSection from './components/ConnectSection'
+import AdminPortal from './components/AdminPortal'
+import CookieBanner from './components/CookieBanner'
+import { trackPageView } from './lib/analytics.js'
 
-const PAGE_ROUTES = ['home', 'sermons', 'events', 'give']
+const PAGE_ROUTES = ['home', 'sermons', 'events', 'give', 'admin']
+const HOME_SECTIONS = ['about', 'daily-word', 'stories', 'faq', 'prayer', 'connect']
+
+function getHashTarget() {
+  return window.location.hash.replace('#', '').toLowerCase()
+}
 
 function getRoute() {
-  const hash = window.location.hash.replace('#', '').toLowerCase()
+  const hash = getHashTarget()
+  if (HOME_SECTIONS.includes(hash)) return 'home'
   return PAGE_ROUTES.includes(hash) ? hash : 'home'
+}
+
+function getHomeSectionTarget() {
+  const hash = getHashTarget()
+  return HOME_SECTIONS.includes(hash) ? hash : null
+}
+
+function scrollToHomeSection(targetId) {
+  requestAnimationFrame(() => {
+    const el = document.getElementById(targetId)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  })
 }
 
 function HomeFlow() {
@@ -26,6 +51,8 @@ function HomeFlow() {
       <DailyWord />
       <Testimonials />
       <FAQ />
+      <PrayerRequestSection />
+      <ConnectSection />
       <Footer />
     </>
   )
@@ -39,7 +66,14 @@ export default function App() {
   useEffect(() => {
     const handleRouteHash = () => {
       const nextRoute = getRoute()
-      if (nextRoute === route) return
+      const nextSection = getHomeSectionTarget()
+
+      if (nextRoute === route) {
+        if (route === 'home' && nextSection) {
+          scrollToHomeSection(nextSection)
+        }
+        return
+      }
 
       setIsTransitioning(true)
       if (timeoutRef.current) clearTimeout(timeoutRef.current)
@@ -48,14 +82,10 @@ export default function App() {
         setRoute(nextRoute)
         setIsTransitioning(false)
 
-        if (nextRoute === 'home') {
-          const targetId = window.location.hash.replace('#', '')
-          if (targetId && ['about', 'daily-word', 'stories', 'faq'].includes(targetId)) {
-            requestAnimationFrame(() => {
-              const el = document.getElementById(targetId)
-              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-            })
-          }
+        if (nextRoute === 'home' && nextSection) {
+          scrollToHomeSection(nextSection)
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' })
         }
       }, 330)
     }
@@ -67,10 +97,30 @@ export default function App() {
     }
   }, [route])
 
+  useEffect(() => {
+    if (route === 'home') {
+      const nextSection = getHomeSectionTarget()
+      if (nextSection) {
+        scrollToHomeSection(nextSection)
+      }
+    }
+  }, [route])
+
+  useEffect(() => {
+    const handleAnalyticsPageView = () => {
+      trackPageView(window.location.hash || '#home')
+    }
+
+    handleAnalyticsPageView()
+    window.addEventListener('hashchange', handleAnalyticsPageView)
+    return () => window.removeEventListener('hashchange', handleAnalyticsPageView)
+  }, [])
+
   return (
     <div className="bg-void min-h-screen">
       <SmoothCursor />
       <Navbar />
+      <CookieBanner />
 
       <div
         className={`transition-all duration-500 ${
@@ -81,6 +131,7 @@ export default function App() {
         {route === 'sermons' && <Sermons />}
         {route === 'events' && <Events />}
         {route === 'give' && <Give />}
+        {route === 'admin' && <AdminPortal />}
       </div>
     </div>
   )

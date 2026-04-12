@@ -44,7 +44,7 @@ export default function Navbar() {
             ))}
           </ul>
 
-          <a href="#give" className="btn-bracket hidden md:inline-block text-xs">
+          <a href="#connect" className="btn-bracket hidden md:inline-block text-xs">
             (join us)
           </a>
 
@@ -69,7 +69,7 @@ export default function Navbar() {
                   {renderNavLabel(link)}
                 </a>
           ))}
-          <a href="#give" onClick={() => setMenuOpen(false)} className="btn-bracket mt-4">
+          <a href="#connect" onClick={() => setMenuOpen(false)} className="btn-bracket mt-4">
             (join us)
           </a>
         </div>

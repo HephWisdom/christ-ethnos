@@ -57,7 +57,7 @@ export default function FAQ() {
               First visits can feel uncertain. These questions come from
               people who showed up wondering what they were walking into.
             </p>
-            <button className="btn-bracket mt-10">(plan your visit)</button>
+            <a href="#connect" className="btn-bracket mt-10 inline-block">(plan your visit)</a>
           </div>
 
           {/* Right accordion */}

@@ -1,6 +1,26 @@
 import scriptureImage from '../assets/scripture-image.png'
+import { getWhatsAppHref, isWhatsAppConfigured } from '../lib/whatsapp.js'
+
+const whatsappHref = getWhatsAppHref()
+const whatsappReady = isWhatsAppConfigured()
 
 const socialLinks = [
+  {
+    name: 'WhatsApp',
+    href: whatsappHref || '#connect',
+    accentClass: whatsappReady
+      ? 'hover:border-[#25d366]/70 hover:bg-[#25d366]/10'
+      : 'opacity-55',
+    external: Boolean(whatsappHref),
+    icon: (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 sm:h-[18px] sm:w-[18px]">
+        <path
+          d="M12 3.5a8.45 8.45 0 0 0-7.34 12.63L3.5 20.5l4.5-1.14A8.5 8.5 0 1 0 12 3.5Zm0 15.25a6.7 6.7 0 0 1-3.42-.94l-.24-.14-2.67.67.71-2.6-.16-.27A6.75 6.75 0 1 1 12 18.75Zm3.7-4.98c-.2-.1-1.16-.57-1.34-.63-.18-.07-.32-.1-.45.1-.14.2-.52.63-.64.76-.12.13-.24.15-.45.05-.2-.1-.86-.31-1.63-.98-.6-.54-1-1.2-1.12-1.4-.12-.2-.01-.31.09-.4.09-.09.2-.24.3-.36.1-.12.14-.2.2-.34.07-.13.03-.25-.02-.35-.05-.1-.45-1.08-.62-1.48-.16-.39-.32-.34-.45-.34h-.38c-.13 0-.35.05-.53.25-.18.2-.7.69-.7 1.69s.72 1.97.82 2.1c.1.13 1.42 2.17 3.44 3.04 2.03.87 2.03.58 2.4.54.37-.04 1.16-.47 1.33-.92.17-.45.17-.84.12-.92-.04-.08-.18-.12-.38-.22Z"
+          fill="#25d366"
+        />
+      </svg>
+    ),
+  },
   {
     name: 'Instagram',
     href: '#',
@@ -107,11 +127,11 @@ export default function Footer() {
             <em className="text-ember-300">already waiting</em>
           </h2>
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <a href="#give" className="btn-bracket-glow text-base px-8 py-3 inline-block">
+            <a href="#connect" className="btn-bracket-glow text-base px-8 py-3 inline-block">
               (plan your visit)
             </a>
-            <a href="#sermons" className="btn-bracket text-base px-8 py-3 inline-block">
-              (watch sermons)
+            <a href="#prayer" className="btn-bracket text-base px-8 py-3 inline-block">
+              (share a prayer request)
             </a>
           </div>
         </div>
@@ -129,6 +149,8 @@ export default function Footer() {
                 href={link.href}
                 aria-label={link.name}
                 title={link.name}
+                target={link.external ? '_blank' : undefined}
+                rel={link.external ? 'noreferrer' : undefined}
                 className={`group flex h-10 w-10 items-center justify-center rounded-full border border-bone/12 bg-bone/[0.03] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(255,255,255,0.08)] sm:h-11 sm:w-11 ${link.accentClass}`}
               >
                 {link.icon}
