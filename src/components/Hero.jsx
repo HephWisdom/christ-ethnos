@@ -108,7 +108,7 @@ export default function Hero() {
             className="flex flex-wrap items-center justify-center gap-4 mt-10 animate-fade-up opacity-0-init"
             style={{ animationDelay: '700ms', animationFillMode: 'forwards' }}
           >
-            <a href="#give" className="btn-bracket-glow inline-block">(plan your visit)</a>
+            <a href="#connect" className="btn-bracket-glow inline-block">(join online)</a>
             <a href="#sermons" className="btn-bracket inline-block">(watch sermons)</a>
           </div>
         </div>

@@ -90,8 +90,7 @@ export default function PrayerRequestSection() {
               <em className="text-ember-300">stand with you</em>
             </h2>
             <p className="mt-8 max-w-xl font-body text-lg leading-relaxed text-bone/50">
-              Private burdens should not stay private forever. This form now saves prayer requests
-              directly into MongoDB so your team can respond, pray, and follow up.
+              Private burdens should not stay private forever.
             </p>
             <div className="mt-12 grid gap-6 sm:grid-cols-2">
               {[

@@ -23,8 +23,9 @@ const socialLinks = [
   },
   {
     name: 'Instagram',
-    href: '#',
+    href: 'https://www.instagram.com/christethnos?igsh=MXJqOXU5Ym41bGJrOA==',
     accentClass: 'hover:border-[#ee2a7b]/70 hover:bg-[#ee2a7b]/10',
+    external: true,
     icon: (
       <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 sm:h-[18px] sm:w-[18px]">
         <defs>
@@ -43,8 +44,9 @@ const socialLinks = [
   },
   {
     name: 'YouTube',
-    href: '#',
-    accentClass: 'hover:border-[#ff0033]/70 hover:bg-[#ff0033]/10',
+    href: null,
+    accentClass: 'cursor-not-allowed opacity-55',
+    comingSoon: true,
     icon: (
       <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 sm:h-[18px] sm:w-[18px]">
         <path
@@ -57,8 +59,9 @@ const socialLinks = [
   },
   {
     name: 'Facebook',
-    href: '#',
+    href: 'https://www.facebook.com/share/18V6txSf7N/',
     accentClass: 'hover:border-[#1877f2]/70 hover:bg-[#1877f2]/10',
+    external: true,
     icon: (
       <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 sm:h-[18px] sm:w-[18px]">
         <circle cx="12" cy="12" r="9" fill="#1877f2" />
@@ -71,8 +74,9 @@ const socialLinks = [
   },
   {
     name: 'TikTok',
-    href: '#',
+    href: 'https://www.tiktok.com/@christethnos?_r=1&_t=ZS-950vh6nEkc4',
     accentClass: 'hover:border-[#25f4ee]/70 hover:bg-[#25f4ee]/10',
+    external: true,
     icon: (
       <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 sm:h-[18px] sm:w-[18px]">
         <path
@@ -114,11 +118,6 @@ export default function Footer() {
           }}
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,5,5,0.76),rgba(4,5,5,0.5),rgba(4,5,5,0.82))] pointer-events-none" />
-        <div
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-px h-2/3 pointer-events-none animate-flicker"
-          style={{ background: 'linear-gradient(to top, rgba(230, 200, 155, 0.95), transparent)' }}
-        />
-
         <div className="relative z-10 px-6">
           <p className="meta-label mb-6">Come as you are</p>
           <h2 className="font-display text-5xl md:text-7xl lg:text-8xl text-bone leading-tight mb-10">
@@ -146,15 +145,16 @@ export default function Footer() {
             {socialLinks.map((link) => (
               <a
                 key={link.name}
-                href={link.href}
-                aria-label={link.name}
-                title={link.name}
+                href={link.href || undefined}
+                aria-label={link.comingSoon ? `${link.name} coming soon` : link.name}
+                title={link.comingSoon ? `${link.name} coming soon` : link.name}
                 target={link.external ? '_blank' : undefined}
                 rel={link.external ? 'noreferrer' : undefined}
+                aria-disabled={link.comingSoon ? 'true' : undefined}
                 className={`group flex h-10 w-10 items-center justify-center rounded-full border border-bone/12 bg-bone/[0.03] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(255,255,255,0.08)] sm:h-11 sm:w-11 ${link.accentClass}`}
               >
                 {link.icon}
-                <span className="sr-only">{link.name}</span>
+                <span className="sr-only">{link.comingSoon ? `${link.name} coming soon` : link.name}</span>
               </a>
             ))}
           </div>
