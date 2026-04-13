@@ -2,9 +2,9 @@ import mongoose from 'mongoose'
 
 const prayerRequestSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, trim: true },
-    email: { type: String, trim: true, lowercase: true, default: '' },
-    request: { type: String, required: true, trim: true },
+    name: { type: String, required: true, trim: true, maxlength: 120 },
+    email: { type: String, trim: true, lowercase: true, maxlength: 160, default: '' },
+    request: { type: String, required: true, trim: true, maxlength: 4000 },
     isPrivate: { type: Boolean, default: false },
     status: {
       type: String,

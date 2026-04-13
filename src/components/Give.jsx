@@ -54,7 +54,7 @@ export default function Give() {
 
       setStatus({
         tone: 'success',
-        message: 'Giving intent saved. Your finance team can now follow up from the database.',
+        message: 'Giving intent saved. Your finance team can follow up.',
       })
       setForm({
         name: '',
@@ -189,7 +189,7 @@ export default function Give() {
               {isSubmitting ? '(saving...)' : `(give $${effectiveAmount})`}
             </button>
             <span className="font-body text-sm text-bone/35 italic">
-              This stores an intent record in MongoDB. It is not a payment gateway yet.
+              This records your giving intent. It is not a payment gateway yet.
             </span>
           </div>
         </form>

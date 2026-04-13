@@ -6,6 +6,8 @@ import adminRouter from './routes/admin.js'
 import analyticsRouter from './routes/analytics.js'
 import contentRouter from './routes/content.js'
 import formsRouter from './routes/forms.js'
+import { getErrorStatus, sendError } from './lib/http.js'
+import { applySecurityHeaders, requireJsonBody } from './lib/security.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -34,6 +36,7 @@ function applyCors(req, res, next) {
 
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-api-key')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
+  res.setHeader('Access-Control-Max-Age', '600')
 
   if (req.method === 'OPTIONS') {
     res.status(204).end()
@@ -53,8 +56,27 @@ function mountApiRoutes(app, prefix = '/api') {
 export function createApp({ rootApiRoutes = false, serveStatic = false } = {}) {
   const app = express()
 
+  app.disable('x-powered-by')
+  app.set('trust proxy', 1)
+
+  app.use(applySecurityHeaders)
   app.use(applyCors)
-  app.use(express.json())
+  app.use(requireJsonBody)
+  app.use(express.json({ limit: process.env.JSON_BODY_LIMIT || '32kb', strict: true }))
+  app.use((error, req, res, next) => {
+    if (error?.type === 'entity.too.large') {
+      sendError(res, 413, 'Request body is too large.', error)
+      return
+    }
+
+    if (error instanceof SyntaxError && 'body' in error) {
+      sendError(res, 400, 'Invalid JSON body.', error)
+      return
+    }
+
+    next(error)
+  })
+
   mountApiRoutes(app)
 
   if (rootApiRoutes) {
@@ -72,6 +94,15 @@ export function createApp({ rootApiRoutes = false, serveStatic = false } = {}) {
       res.sendFile(indexFile)
     })
   }
+
+  app.use((error, req, res, next) => {
+    if (res.headersSent) {
+      next(error)
+      return
+    }
+
+    sendError(res, getErrorStatus(error), 'Unexpected server error.', error)
+  })
 
   return app
 }

@@ -2,9 +2,9 @@ import mongoose from 'mongoose'
 
 const contactMessageSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, trim: true },
-    email: { type: String, required: true, trim: true, lowercase: true },
-    phone: { type: String, trim: true, default: '' },
+    name: { type: String, required: true, trim: true, maxlength: 120 },
+    email: { type: String, required: true, trim: true, lowercase: true, maxlength: 160 },
+    phone: { type: String, trim: true, maxlength: 40, default: '' },
     visitType: {
       type: String,
       enum: ['first-visit', 'online-service', 'pastoral-care', 'serve-team', 'general'],
@@ -15,7 +15,7 @@ const contactMessageSchema = new mongoose.Schema(
       enum: ['email', 'phone', 'whatsapp'],
       default: 'email',
     },
-    message: { type: String, required: true, trim: true },
+    message: { type: String, required: true, trim: true, maxlength: 4000 },
     status: {
       type: String,
       enum: ['new', 'follow_up', 'closed'],

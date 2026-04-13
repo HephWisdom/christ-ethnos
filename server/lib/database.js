@@ -1,5 +1,8 @@
 import mongoose from 'mongoose'
 
+mongoose.set('sanitizeFilter', true)
+mongoose.set('strictQuery', true)
+
 const databaseCache = globalThis.__churchSiteDatabaseCache ?? {
   connection: null,
   promise: null,

@@ -201,7 +201,7 @@ export default function Events() {
                   {isSubmitting ? '(sending...)' : '(reserve my place)'}
                 </button>
                 <span className="font-body text-sm text-bone/35 italic">
-                  Registration lands directly in MongoDB.
+                  Registration goes to the events team.
                 </span>
               </div>
             </form>

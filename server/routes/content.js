@@ -7,6 +7,7 @@ import {
   serializeEvent,
   serializeSermon,
 } from '../../shared/content.js'
+import { sendError } from '../lib/http.js'
 import { connectToDatabase, isDatabaseConfigured } from '../lib/database.js'
 import DailyWord from '../models/DailyWord.js'
 import Event from '../models/Event.js'
@@ -48,10 +49,14 @@ router.get('/health', async (req, res) => {
       database: 'connected',
     })
   } catch (error) {
+    if (process.env.NODE_ENV !== 'test') {
+      console.error('Health check failed.', error)
+    }
+
     res.status(500).json({
       ok: false,
       database: 'error',
-      message: error.message,
+      message: 'Health check failed.',
     })
   }
 })
@@ -67,10 +72,7 @@ router.get('/sermons', async (req, res) => {
       })
     )
   } catch (error) {
-    res.status(500).json({
-      message: 'Failed to load sermons.',
-      details: error.message,
-    })
+    sendError(res, 500, 'Failed to load sermons.', error)
   }
 })
 
@@ -85,10 +87,7 @@ router.get('/events', async (req, res) => {
       })
     )
   } catch (error) {
-    res.status(500).json({
-      message: 'Failed to load events.',
-      details: error.message,
-    })
+    sendError(res, 500, 'Failed to load events.', error)
   }
 })
 
@@ -103,10 +102,7 @@ router.get('/daily-word', async (req, res) => {
       })
     )
   } catch (error) {
-    res.status(500).json({
-      message: 'Failed to load daily words.',
-      details: error.message,
-    })
+    sendError(res, 500, 'Failed to load daily words.', error)
   }
 })
 

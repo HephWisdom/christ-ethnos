@@ -2,13 +2,13 @@ import mongoose from 'mongoose'
 
 const sermonSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true, trim: true },
-    speaker: { type: String, required: true, trim: true },
-    series: { type: String, trim: true, default: '' },
-    summary: { type: String, trim: true, default: '' },
+    title: { type: String, required: true, trim: true, maxlength: 160 },
+    speaker: { type: String, required: true, trim: true, maxlength: 120 },
+    series: { type: String, trim: true, maxlength: 120, default: '' },
+    summary: { type: String, trim: true, maxlength: 1000, default: '' },
     publishedAt: { type: Date, required: true },
-    duration: { type: String, required: true, trim: true },
-    videoId: { type: String, required: true, trim: true },
+    duration: { type: String, required: true, trim: true, maxlength: 20 },
+    videoId: { type: String, required: true, trim: true, maxlength: 120 },
   },
   {
     timestamps: true,

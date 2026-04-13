@@ -1,12 +1,18 @@
 import { Router } from 'express'
+import { getErrorStatus, sendError } from '../lib/http.js'
+import { createRateLimiter, getClientIp, sanitizeMetadata } from '../lib/security.js'
+import { cleanEnum, cleanString, parsePositiveNumber } from '../lib/validation.js'
 import { connectToDatabase } from '../lib/database.js'
 import AnalyticsEvent from '../models/AnalyticsEvent.js'
 
 const router = Router()
 
-function cleanString(value, maxLength = 1000) {
-  return String(value || '').trim().slice(0, maxLength)
-}
+const analyticsLimiter = createRateLimiter({
+  name: 'analytics',
+  windowMs: 60 * 1000,
+  max: 120,
+  keyGenerator: (req) => getClientIp(req),
+})
 
 function normalizeReferrerHost(value) {
   const rawValue = cleanString(value, 2000)
@@ -20,16 +26,11 @@ function normalizeReferrerHost(value) {
   }
 }
 
-function normalizeNumber(value) {
-  const parsed = Number(value)
-  return Number.isFinite(parsed) ? parsed : 0
-}
-
-router.post('/track', async (req, res) => {
+router.post('/track', analyticsLimiter, async (req, res) => {
   try {
     await connectToDatabase()
 
-    const eventType = cleanString(req.body.eventType, 40)
+    const eventType = cleanEnum(req.body.eventType, ['page_view', 'cta_click', 'consent_granted'])
     const visitorId = cleanString(req.body.visitorId, 120)
     const sessionId = cleanString(req.body.sessionId, 120)
     const path = cleanString(req.body.path, 240) || '#home'
@@ -54,15 +55,15 @@ router.post('/track', async (req, res) => {
       os: cleanString(req.body.os, 80) || 'Unknown',
       deviceType: cleanString(req.body.deviceType, 40) || 'unknown',
       language: cleanString(req.body.language, 40),
-      screenWidth: normalizeNumber(req.body.screenWidth),
-      screenHeight: normalizeNumber(req.body.screenHeight),
+      screenWidth: parsePositiveNumber(req.body.screenWidth, { min: 1, max: 10000 }) || 0,
+      screenHeight: parsePositiveNumber(req.body.screenHeight, { min: 1, max: 10000 }) || 0,
       timezone: cleanString(req.body.timezone, 120),
-      metadata: typeof req.body.metadata === 'object' && req.body.metadata !== null ? req.body.metadata : {},
+      metadata: sanitizeMetadata(req.body.metadata) || {},
     })
 
     res.status(201).json({ ok: true })
   } catch (error) {
-    res.status(500).json({ message: 'Failed to track analytics event.', details: error.message })
+    sendError(res, getErrorStatus(error), 'Failed to track analytics event.', error)
   }
 })
 

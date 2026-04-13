@@ -1,5 +1,16 @@
 import { Router } from 'express'
 import { requireAdminApiKey } from '../lib/admin.js'
+import { getErrorStatus, sendError } from '../lib/http.js'
+import { createRateLimiter, getClientIp } from '../lib/security.js'
+import {
+  cleanEnum,
+  cleanString,
+  cleanUrl,
+  isValidObjectId,
+  isValidYoutubeVideoId,
+  parseOptionalDate,
+  parseOptionalNumber,
+} from '../lib/validation.js'
 import { connectToDatabase } from '../lib/database.js'
 import AnalyticsEvent from '../models/AnalyticsEvent.js'
 import ContactMessage from '../models/ContactMessage.js'
@@ -12,25 +23,19 @@ import Sermon from '../models/Sermon.js'
 
 const router = Router()
 
+const adminLimiter = createRateLimiter({
+  name: 'admin',
+  windowMs: 10 * 60 * 1000,
+  max: 100,
+  keyGenerator: (req) => getClientIp(req),
+  message: 'Too many admin requests. Please wait a few minutes and try again.',
+})
+
 function toRecord(doc) {
   return {
     ...doc,
     id: String(doc._id),
   }
-}
-
-function cleanString(value, maxLength = 4000) {
-  return String(value || '').trim().slice(0, maxLength)
-}
-
-function parseOptionalDate(value) {
-  const parsed = new Date(value)
-  return Number.isNaN(parsed.getTime()) ? null : parsed
-}
-
-function parseOptionalNumber(value) {
-  const parsed = Number(value)
-  return Number.isFinite(parsed) ? parsed : null
 }
 
 function startOfDaysAgo(days) {
@@ -190,7 +195,7 @@ function getEmptyAnalyticsSummary() {
   }
 }
 
-router.use(requireAdminApiKey)
+router.use(adminLimiter, requireAdminApiKey)
 
 router.get('/dashboard', async (req, res) => {
   try {
@@ -228,7 +233,7 @@ router.get('/dashboard', async (req, res) => {
     try {
       analytics = await getAnalyticsSummary()
     } catch (error) {
-      analyticsError = error.message
+      analyticsError = 'Analytics are temporarily unavailable.'
     }
 
     res.json({
@@ -251,7 +256,7 @@ router.get('/dashboard', async (req, res) => {
       ...(analyticsError ? { analyticsError } : {}),
     })
   } catch (error) {
-    res.status(500).json({ message: 'Failed to load admin dashboard.', details: error.message })
+    sendError(res, 500, 'Failed to load admin dashboard.', error)
   }
 })
 
@@ -260,7 +265,7 @@ router.get('/analytics', async (req, res) => {
     await connectToDatabase()
     res.json(await getAnalyticsSummary())
   } catch (error) {
-    res.status(500).json({ message: 'Failed to load analytics.', details: error.message })
+    sendError(res, 500, 'Failed to load analytics.', error)
   }
 })
 
@@ -282,7 +287,7 @@ router.get('/submissions', async (req, res) => {
       givingIntents: givingIntents.map(toRecord),
     })
   } catch (error) {
-    res.status(500).json({ message: 'Failed to load submissions.', details: error.message })
+    sendError(res, 500, 'Failed to load submissions.', error)
   }
 })
 
@@ -291,21 +296,44 @@ router.patch('/submissions/:collection/:id/status', async (req, res) => {
     await connectToDatabase()
 
     const collectionMap = {
-      'prayer-requests': PrayerRequest,
-      'contact-messages': ContactMessage,
-      'event-registrations': EventRegistration,
-      'giving-intents': GivingIntent,
+      'prayer-requests': {
+        model: PrayerRequest,
+        statuses: ['new', 'praying', 'closed'],
+      },
+      'contact-messages': {
+        model: ContactMessage,
+        statuses: ['new', 'follow_up', 'closed'],
+      },
+      'event-registrations': {
+        model: EventRegistration,
+        statuses: ['new', 'confirmed', 'cancelled'],
+      },
+      'giving-intents': {
+        model: GivingIntent,
+        statuses: ['new', 'contacted', 'closed'],
+      },
     }
 
-    const model = collectionMap[req.params.collection]
+    const config = collectionMap[req.params.collection]
 
-    if (!model) {
+    if (!config) {
       res.status(404).json({ message: 'Submission collection not found.' })
       return
     }
 
-    const status = cleanString(req.body.status, 40)
-    const record = await model.findByIdAndUpdate(
+    if (!isValidObjectId(req.params.id)) {
+      res.status(400).json({ message: 'Submission record is invalid.' })
+      return
+    }
+
+    const status = cleanEnum(req.body.status, config.statuses)
+
+    if (!status) {
+      res.status(400).json({ message: 'Submission status is invalid.' })
+      return
+    }
+
+    const record = await config.model.findByIdAndUpdate(
       req.params.id,
       { status },
       { returnDocument: 'after', runValidators: true }
@@ -318,8 +346,7 @@ router.patch('/submissions/:collection/:id/status', async (req, res) => {
 
     res.json(toRecord(record))
   } catch (error) {
-    const status = error.name === 'ValidationError' ? 400 : 500
-    res.status(status).json({ message: 'Failed to update submission status.', details: error.message })
+    sendError(res, getErrorStatus(error), 'Failed to update submission status.', error)
   }
 })
 
@@ -332,7 +359,7 @@ function contentCrudRoutes(path, model, transformPayload) {
       const records = await model.find().sort(transformPayload.sort || {}).lean()
       res.json(records.map(toRecord))
     } catch (error) {
-      res.status(500).json({ message: `Failed to load ${path}.`, details: error.message })
+      sendError(res, 500, `Failed to load ${path}.`, error)
     }
   })
 
@@ -343,14 +370,25 @@ function contentCrudRoutes(path, model, transformPayload) {
       const record = await model.create(payload)
       res.status(201).json(toRecord(record.toObject()))
     } catch (error) {
-      const status = error.name === 'Error' ? 400 : 500
-      res.status(status).json({ message: `Failed to create ${singularLabel}.`, details: error.message })
+      const status = error.name === 'Error' ? 400 : getErrorStatus(error)
+      sendError(
+        res,
+        status,
+        status === 400 ? error.message : `Failed to create ${singularLabel}.`,
+        error
+      )
     }
   })
 
   router.put(`/${path}/:id`, async (req, res) => {
     try {
       await connectToDatabase()
+
+      if (!isValidObjectId(req.params.id)) {
+        res.status(400).json({ message: 'Record is invalid.' })
+        return
+      }
+
       const payload = transformPayload.create(req.body)
       const record = await model.findByIdAndUpdate(req.params.id, payload, {
         returnDocument: 'after',
@@ -364,14 +402,25 @@ function contentCrudRoutes(path, model, transformPayload) {
 
       res.json(toRecord(record))
     } catch (error) {
-      const status = error.name === 'Error' ? 400 : 500
-      res.status(status).json({ message: `Failed to update ${singularLabel}.`, details: error.message })
+      const status = error.name === 'Error' ? 400 : getErrorStatus(error)
+      sendError(
+        res,
+        status,
+        status === 400 ? error.message : `Failed to update ${singularLabel}.`,
+        error
+      )
     }
   })
 
   router.delete(`/${path}/:id`, async (req, res) => {
     try {
       await connectToDatabase()
+
+      if (!isValidObjectId(req.params.id)) {
+        res.status(400).json({ message: 'Record is invalid.' })
+        return
+      }
+
       const deleted = await model.findByIdAndDelete(req.params.id).lean()
 
       if (!deleted) {
@@ -381,7 +430,7 @@ function contentCrudRoutes(path, model, transformPayload) {
 
       res.json({ message: 'Deleted successfully.' })
     } catch (error) {
-      res.status(500).json({ message: `Failed to delete ${singularLabel}.`, details: error.message })
+      sendError(res, 500, `Failed to delete ${singularLabel}.`, error)
     }
   })
 }
@@ -392,14 +441,20 @@ contentCrudRoutes('sermons', Sermon, {
   create(body) {
     const publishedAt = parseOptionalDate(body.publishedAt)
 
+    const videoId = cleanString(body.videoId, 120)
+
     if (
       !cleanString(body.title, 160) ||
       !cleanString(body.speaker, 120) ||
       !publishedAt ||
       !cleanString(body.duration, 20) ||
-      !cleanString(body.videoId, 120)
+      !videoId
     ) {
       throw new Error('All sermon fields are required.')
+    }
+
+    if (!isValidYoutubeVideoId(videoId)) {
+      throw new Error('Enter a valid YouTube video ID.')
     }
 
     return {
@@ -409,7 +464,7 @@ contentCrudRoutes('sermons', Sermon, {
       summary: cleanString(body.summary, 1000),
       publishedAt,
       duration: cleanString(body.duration, 20),
-      videoId: cleanString(body.videoId, 120),
+      videoId,
     }
   },
 })
@@ -428,7 +483,7 @@ contentCrudRoutes('events', Event, {
       title: cleanString(body.title, 160),
       location: cleanString(body.location, 160),
       description: cleanString(body.description, 1200),
-      registrationUrl: cleanString(body.registrationUrl, 1000),
+      registrationUrl: cleanUrl(body.registrationUrl),
       startsAt,
     }
   },

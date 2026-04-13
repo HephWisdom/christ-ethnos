@@ -164,7 +164,7 @@ export default function PrayerRequestSection() {
                 {isSubmitting ? '(sending...)' : '(send prayer request)'}
               </button>
               <span className="font-body text-sm italic text-bone/30">
-                Stored in the `PrayerRequest` collection.
+                Shared with the pastoral care team.
               </span>
             </div>
           </form>

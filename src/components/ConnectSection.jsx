@@ -257,7 +257,7 @@ export default function ConnectSection() {
                 {isSubmitting ? '(sending...)' : '(send me the zoom details)'}
               </button>
               <span className="font-body text-sm italic text-bone/30">
-                Stored in the `ContactMessage` collection.
+                Your message goes to the welcome team.
               </span>
             </div>
           </form>

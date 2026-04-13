@@ -4,6 +4,31 @@ import { apiRequest } from '../lib/api.js'
 const ADMIN_STORAGE_KEY = 'church-admin-api-key'
 const tabs = ['sermons', 'events', 'daily-word']
 
+function getStoredAdminKey() {
+  const sessionKey = window.sessionStorage.getItem(ADMIN_STORAGE_KEY)
+
+  if (sessionKey) return sessionKey
+
+  const legacyKey = window.localStorage.getItem(ADMIN_STORAGE_KEY)
+
+  if (legacyKey) {
+    window.sessionStorage.setItem(ADMIN_STORAGE_KEY, legacyKey)
+    window.localStorage.removeItem(ADMIN_STORAGE_KEY)
+  }
+
+  return legacyKey || ''
+}
+
+function storeAdminKey(value) {
+  window.sessionStorage.setItem(ADMIN_STORAGE_KEY, value)
+  window.localStorage.removeItem(ADMIN_STORAGE_KEY)
+}
+
+function clearStoredAdminKey() {
+  window.sessionStorage.removeItem(ADMIN_STORAGE_KEY)
+  window.localStorage.removeItem(ADMIN_STORAGE_KEY)
+}
+
 const collectionConfig = {
   sermons: {
     title: 'Sermons',
@@ -227,7 +252,7 @@ function CollectionEditor({
             {isSaving ? '(saving...)' : selectedId ? '(save changes)' : '(create record)'}
           </button>
           <span className="font-body text-sm text-bone/30 italic">
-            Writes directly to MongoDB through the admin API.
+            Saved through the protected admin API.
           </span>
         </div>
       </form>
@@ -236,8 +261,8 @@ function CollectionEditor({
 }
 
 export default function AdminPortal() {
-  const [keyInput, setKeyInput] = useState(() => localStorage.getItem(ADMIN_STORAGE_KEY) || '')
-  const [adminKey, setAdminKey] = useState(() => localStorage.getItem(ADMIN_STORAGE_KEY) || '')
+  const [keyInput, setKeyInput] = useState(() => getStoredAdminKey())
+  const [adminKey, setAdminKey] = useState(() => getStoredAdminKey())
   const [dashboard, setDashboard] = useState(null)
   const [collections, setCollections] = useState({
     sermons: [],
@@ -296,7 +321,7 @@ export default function AdminPortal() {
     )
 
     if (invalidKeyFailure) {
-      localStorage.removeItem(ADMIN_STORAGE_KEY)
+      clearStoredAdminKey()
       setAdminKey('')
       setIsLoading(false)
       return
@@ -337,7 +362,7 @@ export default function AdminPortal() {
 
   function handleAdminUnlock(event) {
     event.preventDefault()
-    localStorage.setItem(ADMIN_STORAGE_KEY, keyInput)
+    storeAdminKey(keyInput)
     setAdminKey(keyInput)
   }
 
@@ -465,7 +490,7 @@ export default function AdminPortal() {
               type="button"
               className="btn-bracket"
               onClick={() => {
-                localStorage.removeItem(ADMIN_STORAGE_KEY)
+                clearStoredAdminKey()
                 setAdminKey('')
                 setKeyInput('')
               }}
