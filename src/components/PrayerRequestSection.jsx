@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { apiRequest } from '../lib/api.js'
+import handsHolding from '../assets/hands-holding.png'
 
 function useInView(threshold = 0.15) {
   const ref = useRef(null)
@@ -64,10 +65,18 @@ export default function PrayerRequestSection() {
 
   return (
     <section id="prayer" ref={ref} className="relative overflow-hidden bg-void py-28 md:py-36">
+      <img
+        src={handsHolding}
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center opacity-[0.16] brightness-50 contrast-125 saturate-50 md:opacity-20"
+      />
+
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
+            linear-gradient(180deg, rgba(4, 5, 5, 0.9) 0%, rgba(4, 5, 5, 0.76) 44%, rgba(4, 5, 5, 0.94) 100%),
             radial-gradient(ellipse 56% 40% at 15% 15%, rgba(188, 140, 97, 0.12) 0%, transparent 72%),
             radial-gradient(ellipse 44% 52% at 84% 85%, rgba(72, 48, 36, 0.48) 0%, transparent 70%)
           `,
