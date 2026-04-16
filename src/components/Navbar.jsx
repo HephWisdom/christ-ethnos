@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import logo from '../assets/logo-nav.webp'
 
 const navLinks = ['About', 'Sermons', 'Events', 'Give', 'FAQ']
 
@@ -26,9 +27,17 @@ export default function Navbar() {
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-5 flex items-center justify-between">
           <a
             href="#home"
-            className="font-label tracking-[0.3em] text-sm text-bone/90 uppercase hover:text-ember-400 transition-colors"
+            className="flex flex-col items-center gap-1 transition-opacity hover:opacity-85"
+            aria-label="Christ Ethnos Global Ministries home"
           >
-            Christ Ēthnos
+            <img
+              src={logo}
+              alt="Christ Ethnos Global Ministries"
+              className="h-10 w-auto shrink-0 md:h-12"
+            />
+            <span className="font-label tracking-[0.18em] text-[10px] uppercase leading-none text-bone/90 md:text-xs">
+              Christ Ēthnos
+            </span>
           </a>
 
           <ul className="hidden md:flex items-center gap-10">

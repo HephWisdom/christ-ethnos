@@ -47,35 +47,7 @@ export default function Hero() {
         }}
       />
 
-        {/* Central light beam */}
-        <div className="absolute inset-0 z-0 flex items-start justify-center pointer-events-none">
-          <div
-            style={{
-              position: 'absolute',
-              top: '-6%',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: 'clamp(140px, 18vw, 220px)',
-              height: '78%',
-              background:
-                'linear-gradient(180deg, rgba(244,238,228,0) 0%, rgba(230,200,155,0.34) 16%, rgba(188,140,97,0.2) 62%, rgba(4,5,5,0) 100%)',
-              filter: 'blur(18px)',
-            }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              top: '13%',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '220px',
-              height: '220px',
-              borderRadius: '999px',
-              background: 'radial-gradient(circle, rgba(230,200,155,0.16), rgba(188,140,97,0.06) 45%, transparent 72%)',
-              filter: 'blur(10px)',
-            }}
-          />
-        </div>
+ 
 
       {/* Content */}
       <div className="relative z-20 flex flex-col justify-between min-h-[110vh] px-6 md:px-16 pt-32 pb-16">
