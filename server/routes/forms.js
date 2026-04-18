@@ -11,7 +11,9 @@ import {
 import { connectToDatabase } from '../lib/database.js'
 import {
   sendPrayerAcknowledgementEmail,
+  sendPrayerNotificationEmail,
   sendZoomAcknowledgementEmail,
+  sendZoomNotificationEmail,
 } from '../lib/email.js'
 import ContactMessage from '../models/ContactMessage.js'
 import DailyWord from '../models/DailyWord.js'
@@ -31,7 +33,7 @@ const publicFormLimiter = createRateLimiter({
   message: 'Too many submissions. Please wait a few minutes and try again.',
 })
 
-async function trySendAcknowledgement(label, sendEmail) {
+async function trySendFormEmail(label, sendEmail) {
   try {
     const result = await sendEmail()
 
@@ -84,15 +86,27 @@ router.post('/prayer-requests', publicFormLimiter, rejectHoneypotSubmissions, as
       isPrivate,
     })
 
-    const acknowledgement = email
-      ? await trySendAcknowledgement('prayer acknowledgement email', () => (
-        sendPrayerAcknowledgementEmail({
-          to: email,
-          name,
+    const [acknowledgement] = await Promise.all([
+      email
+        ? trySendFormEmail('prayer acknowledgement email', () => (
+          sendPrayerAcknowledgementEmail({
+            to: email,
+            name,
+            requestId: String(created._id),
+          })
+        ))
+        : { sent: false, skipped: true, reason: 'email_not_provided' },
+      trySendFormEmail('prayer team notification email', () => (
+        sendPrayerNotificationEmail({
           requestId: String(created._id),
+          name,
+          email,
+          request,
+          isPrivate,
+          createdAt: created.createdAt,
         })
-      ))
-      : { sent: false, skipped: true, reason: 'email_not_provided' }
+      )),
+    ])
 
     res.status(201).json({
       message: acknowledgement.sent
@@ -142,13 +156,27 @@ router.post('/contact-messages', publicFormLimiter, rejectHoneypotSubmissions, a
       message,
     })
 
-    const acknowledgement = await trySendAcknowledgement('Zoom acknowledgement email', () => (
-      sendZoomAcknowledgementEmail({
-        to: email,
-        name,
-        messageId: String(created._id),
-      })
-    ))
+    const [acknowledgement] = await Promise.all([
+      trySendFormEmail('Zoom acknowledgement email', () => (
+        sendZoomAcknowledgementEmail({
+          to: email,
+          name,
+          messageId: String(created._id),
+        })
+      )),
+      trySendFormEmail('Zoom team notification email', () => (
+        sendZoomNotificationEmail({
+          messageId: String(created._id),
+          name,
+          email,
+          phone,
+          visitType,
+          preferredFollowUp,
+          message,
+          createdAt: created.createdAt,
+        })
+      )),
+    ])
 
     res.status(201).json({
       message: acknowledgement.sent
