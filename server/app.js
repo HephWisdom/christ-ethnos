@@ -7,13 +7,32 @@ import analyticsRouter from './routes/analytics.js'
 import contentRouter from './routes/content.js'
 import formsRouter from './routes/forms.js'
 import { getErrorStatus, sendError } from './lib/http.js'
-import { applySecurityHeaders, requireJsonBody } from './lib/security.js'
+import {
+  applySecurityHeaders,
+  createRateLimiter,
+  getClientIp,
+  rejectUnsafePayloadKeys,
+  requireJsonBody,
+} from './lib/security.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const rootDir = path.resolve(__dirname, '..')
 const distDir = path.join(rootDir, 'dist')
 const indexFile = path.join(distDir, 'index.html')
+
+function getPositiveIntegerEnv(name, fallback) {
+  const value = Number(process.env[name])
+  return Number.isInteger(value) && value > 0 ? value : fallback
+}
+
+const globalRequestLimiter = createRateLimiter({
+  name: 'global',
+  windowMs: getPositiveIntegerEnv('RATE_LIMIT_WINDOW_MS', 60 * 1000),
+  max: getPositiveIntegerEnv('RATE_LIMIT_MAX', 300),
+  keyGenerator: (req) => getClientIp(req),
+  message: 'Too many requests. Please wait a moment and try again.',
+})
 
 function getAllowedOrigins() {
   return String(process.env.CORS_ORIGINS || '')
@@ -57,12 +76,15 @@ export function createApp({ rootApiRoutes = false, serveStatic = false } = {}) {
   const app = express()
 
   app.disable('x-powered-by')
+  app.set('query parser', 'simple')
   app.set('trust proxy', 1)
 
   app.use(applySecurityHeaders)
   app.use(applyCors)
+  app.use(globalRequestLimiter)
   app.use(requireJsonBody)
   app.use(express.json({ limit: process.env.JSON_BODY_LIMIT || '32kb', strict: true }))
+  app.use(rejectUnsafePayloadKeys)
   app.use((error, req, res, next) => {
     if (error?.type === 'entity.too.large') {
       sendError(res, 413, 'Request body is too large.', error)

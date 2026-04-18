@@ -1,6 +1,9 @@
 const WRITE_METHODS = new Set(['POST', 'PUT', 'PATCH'])
 const HONEYPOT_FIELDS = ['website', 'company', 'url', 'homepage']
 const MAX_RATE_LIMIT_KEYS = 5000
+const UNSAFE_OBJECT_KEYS = new Set(['__proto__', 'constructor', 'prototype'])
+const MAX_PAYLOAD_GUARD_DEPTH = 20
+const MAX_PAYLOAD_GUARD_KEYS = 2000
 
 export function getClientIp(req) {
   if (req.ip) {
@@ -58,10 +61,73 @@ export function requireJsonBody(req, res, next) {
   next()
 }
 
+function isUnsafeObjectKey(key) {
+  return (
+    key.startsWith('$') ||
+    key.includes('.') ||
+    UNSAFE_OBJECT_KEYS.has(key)
+  )
+}
+
+function findUnsafePayloadPath(value, location) {
+  const stack = [{ value, path: location, depth: 0 }]
+  let scannedKeys = 0
+
+  while (stack.length) {
+    const current = stack.pop()
+
+    if (!current.value || typeof current.value !== 'object') {
+      continue
+    }
+
+    if (current.depth > MAX_PAYLOAD_GUARD_DEPTH) {
+      return current.path
+    }
+
+    const entries = Object.entries(current.value)
+    scannedKeys += entries.length
+
+    if (scannedKeys > MAX_PAYLOAD_GUARD_KEYS) {
+      return current.path
+    }
+
+    for (const [key, child] of entries) {
+      if (isUnsafeObjectKey(key)) {
+        return `${current.path}.${key}`
+      }
+
+      stack.push({
+        value: child,
+        path: `${current.path}.${key}`,
+        depth: current.depth + 1,
+      })
+    }
+  }
+
+  return ''
+}
+
+export function rejectUnsafePayloadKeys(req, res, next) {
+  const unsafePath = findUnsafePayloadPath(req.query, 'query') ||
+    findUnsafePayloadPath(req.body, 'body')
+
+  if (unsafePath) {
+    if (process.env.NODE_ENV !== 'test') {
+      console.warn(`Rejected request with unsafe payload key at ${unsafePath}.`)
+    }
+
+    res.status(400).json({ message: 'Request contains unsupported field names.' })
+    return
+  }
+
+  next()
+}
+
 export function createRateLimiter({
   name,
   windowMs,
   max,
+  maxKeys = MAX_RATE_LIMIT_KEYS,
   keyGenerator = (req) => `${getClientIp(req)}:${req.method}:${req.originalUrl}`,
   message = 'Too many requests. Please try again soon.',
 }) {
@@ -75,11 +141,29 @@ export function createRateLimiter({
     }
   }
 
+  function evictOldestKeys() {
+    const keysToDelete = hits.size - maxKeys
+    let deleted = 0
+
+    for (const key of hits.keys()) {
+      hits.delete(key)
+      deleted += 1
+
+      if (deleted >= keysToDelete) {
+        return
+      }
+    }
+  }
+
   return function rateLimiter(req, res, next) {
     const now = Date.now()
 
-    if (hits.size > MAX_RATE_LIMIT_KEYS) {
+    if (hits.size > maxKeys) {
       pruneExpired(now)
+
+      if (hits.size > maxKeys) {
+        evictOldestKeys()
+      }
     }
 
     const key = `${name}:${keyGenerator(req)}`
@@ -90,6 +174,14 @@ export function createRateLimiter({
 
     record.count += 1
     hits.set(key, record)
+
+    if (hits.size > maxKeys) {
+      pruneExpired(now)
+
+      if (hits.size > maxKeys) {
+        evictOldestKeys()
+      }
+    }
 
     const retryAfterSeconds = Math.max(1, Math.ceil((record.resetAt - now) / 1000))
     const remaining = Math.max(0, max - record.count)

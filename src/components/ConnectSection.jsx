@@ -45,14 +45,14 @@ export default function ConnectSection() {
     setStatus({ tone: 'idle', message: '' })
 
     try {
-      await apiRequest('/api/contact-messages', {
+      const payload = await apiRequest('/api/contact-messages', {
         method: 'POST',
         body: JSON.stringify(form),
       })
 
       setStatus({
         tone: 'success',
-        message: 'Your message is in. The follow-up team can now see it in the admin dashboard.',
+        message: payload.message || 'Your message is in. The follow-up team can now see it in the admin dashboard.',
       })
       setForm({
         name: '',

@@ -9,6 +9,10 @@ import {
   parsePositiveNumber,
 } from '../lib/validation.js'
 import { connectToDatabase } from '../lib/database.js'
+import {
+  sendPrayerAcknowledgementEmail,
+  sendZoomAcknowledgementEmail,
+} from '../lib/email.js'
 import ContactMessage from '../models/ContactMessage.js'
 import DailyWord from '../models/DailyWord.js'
 import Event from '../models/Event.js'
@@ -26,6 +30,18 @@ const publicFormLimiter = createRateLimiter({
   keyGenerator: (req) => `${getClientIp(req)}:${req.path}`,
   message: 'Too many submissions. Please wait a few minutes and try again.',
 })
+
+async function trySendAcknowledgement(label, sendEmail) {
+  try {
+    return await sendEmail()
+  } catch (error) {
+    if (process.env.NODE_ENV !== 'test') {
+      console.error(`Failed to send ${label}.`, error)
+    }
+
+    return { sent: false, error: true }
+  }
+}
 
 router.post('/prayer-requests', publicFormLimiter, rejectHoneypotSubmissions, async (req, res) => {
   try {
@@ -53,9 +69,22 @@ router.post('/prayer-requests', publicFormLimiter, rejectHoneypotSubmissions, as
       isPrivate,
     })
 
+    const acknowledgement = email
+      ? await trySendAcknowledgement('prayer acknowledgement email', () => (
+        sendPrayerAcknowledgementEmail({
+          to: email,
+          name,
+          requestId: String(created._id),
+        })
+      ))
+      : { sent: false, skipped: true, reason: 'email_not_provided' }
+
     res.status(201).json({
-      message: 'Prayer request received.',
+      message: acknowledgement.sent
+        ? 'Prayer request received. We sent an acknowledgement email to your inbox.'
+        : 'Prayer request received. Our pastoral care team will review it.',
       id: String(created._id),
+      emailAcknowledgement: { sent: acknowledgement.sent },
     })
   } catch (error) {
     sendError(res, 500, 'Failed to save prayer request.', error)
@@ -96,9 +125,20 @@ router.post('/contact-messages', publicFormLimiter, rejectHoneypotSubmissions, a
       message,
     })
 
+    const acknowledgement = await trySendAcknowledgement('Zoom acknowledgement email', () => (
+      sendZoomAcknowledgementEmail({
+        to: email,
+        name,
+        messageId: String(created._id),
+      })
+    ))
+
     res.status(201).json({
-      message: 'Message received.',
+      message: acknowledgement.sent
+        ? 'Message received. We sent an acknowledgement email to your inbox.'
+        : 'Message received. Our welcome team will get back to you soon.',
       id: String(created._id),
+      emailAcknowledgement: { sent: acknowledgement.sent },
     })
   } catch (error) {
     sendError(res, 500, 'Failed to save message.', error)

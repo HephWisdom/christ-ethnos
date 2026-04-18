@@ -38,7 +38,13 @@ export function isValidEmail(value) {
 }
 
 export function isValidObjectId(value) {
-  return mongoose.Types.ObjectId.isValid(cleanString(value, 80))
+  const cleaned = cleanString(value, 80)
+
+  if (!mongoose.Types.ObjectId.isValid(cleaned)) {
+    return false
+  }
+
+  return String(new mongoose.Types.ObjectId(cleaned)) === cleaned
 }
 
 export function cleanUrl(value) {

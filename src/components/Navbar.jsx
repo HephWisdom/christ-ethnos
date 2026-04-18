@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import logo from '../assets/logo-nav.webp'
+import logo from '../assets/logo-2.webp'
 
 const navLinks = ['About', 'Sermons', 'Events', 'Give', 'FAQ']
 

@@ -38,14 +38,14 @@ export default function PrayerRequestSection() {
     setStatus({ tone: 'idle', message: '' })
 
     try {
-      await apiRequest('/api/prayer-requests', {
+      const payload = await apiRequest('/api/prayer-requests', {
         method: 'POST',
         body: JSON.stringify(form),
       })
 
       setStatus({
         tone: 'success',
-        message: 'Your prayer request was received.',
+        message: payload.message || 'Your prayer request was received.',
       })
       setForm({
         name: '',
