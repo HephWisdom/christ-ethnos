@@ -33,13 +33,28 @@ const publicFormLimiter = createRateLimiter({
 
 async function trySendAcknowledgement(label, sendEmail) {
   try {
-    return await sendEmail()
+    const result = await sendEmail()
+
+    if (!result.sent && result.skipped && process.env.NODE_ENV !== 'test') {
+      console.warn(`Skipped ${label}: ${result.reason || 'unknown reason'}.`)
+    }
+
+    return result
   } catch (error) {
     if (process.env.NODE_ENV !== 'test') {
       console.error(`Failed to send ${label}.`, error)
     }
 
-    return { sent: false, error: true }
+    return { sent: false, error: true, reason: 'send_failed' }
+  }
+}
+
+function emailAcknowledgementPayload(acknowledgement) {
+  return {
+    sent: Boolean(acknowledgement.sent),
+    ...(process.env.NODE_ENV !== 'production' && acknowledgement.reason
+      ? { reason: acknowledgement.reason }
+      : {}),
   }
 }
 
@@ -82,9 +97,11 @@ router.post('/prayer-requests', publicFormLimiter, rejectHoneypotSubmissions, as
     res.status(201).json({
       message: acknowledgement.sent
         ? 'Prayer request received. We sent an acknowledgement email to your inbox.'
-        : 'Prayer request received. Our pastoral care team will review it.',
+        : email
+          ? 'Prayer request received, but we could not send the acknowledgement email. Our pastoral care team will review it.'
+          : 'Prayer request received. Our pastoral care team will review it.',
       id: String(created._id),
-      emailAcknowledgement: { sent: acknowledgement.sent },
+      emailAcknowledgement: emailAcknowledgementPayload(acknowledgement),
     })
   } catch (error) {
     sendError(res, 500, 'Failed to save prayer request.', error)
@@ -136,9 +153,9 @@ router.post('/contact-messages', publicFormLimiter, rejectHoneypotSubmissions, a
     res.status(201).json({
       message: acknowledgement.sent
         ? 'Message received. We sent an acknowledgement email to your inbox.'
-        : 'Message received. Our welcome team will get back to you soon.',
+        : 'Message received, but we could not send the acknowledgement email. Our welcome team will get back to you soon.',
       id: String(created._id),
-      emailAcknowledgement: { sent: acknowledgement.sent },
+      emailAcknowledgement: emailAcknowledgementPayload(acknowledgement),
     })
   } catch (error) {
     sendError(res, 500, 'Failed to save message.', error)

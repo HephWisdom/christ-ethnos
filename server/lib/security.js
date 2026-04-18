@@ -61,15 +61,15 @@ export function requireJsonBody(req, res, next) {
   next()
 }
 
-function isUnsafeObjectKey(key) {
+function isUnsafeObjectKey(key, { allowDots = false } = {}) {
   return (
     key.startsWith('$') ||
-    key.includes('.') ||
+    (!allowDots && key.includes('.')) ||
     UNSAFE_OBJECT_KEYS.has(key)
   )
 }
 
-function findUnsafePayloadPath(value, location) {
+function findUnsafePayloadPath(value, location, options = {}) {
   const stack = [{ value, path: location, depth: 0 }]
   let scannedKeys = 0
 
@@ -92,7 +92,7 @@ function findUnsafePayloadPath(value, location) {
     }
 
     for (const [key, child] of entries) {
-      if (isUnsafeObjectKey(key)) {
+      if (isUnsafeObjectKey(key, options)) {
         return `${current.path}.${key}`
       }
 
@@ -108,7 +108,7 @@ function findUnsafePayloadPath(value, location) {
 }
 
 export function rejectUnsafePayloadKeys(req, res, next) {
-  const unsafePath = findUnsafePayloadPath(req.query, 'query') ||
+  const unsafePath = findUnsafePayloadPath(req.query, 'query', { allowDots: true }) ||
     findUnsafePayloadPath(req.body, 'body')
 
   if (unsafePath) {
