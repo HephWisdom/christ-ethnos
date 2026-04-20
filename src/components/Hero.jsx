@@ -13,8 +13,8 @@ export default function Hero() {
         className="absolute inset-0 z-0"
         style={{
           background: `
-            radial-gradient(ellipse 28% 64% at 50% 0%, rgba(230, 200, 155, 0.28) 0%, rgba(188, 140, 97, 0.16) 28%, transparent 72%),
-            radial-gradient(ellipse 76% 58% at 50% 115%, rgba(72, 48, 36, 0.58) 0%, transparent 64%),
+            radial-gradient(ellipse 28% 64% at 50% 0%, rgba(230, 200, 155, 0.28) 0%, rgba(188, 140, 97, 0.16) 28%, transparent 92%),
+            radial-gradient(ellipse 76% 58% at 50% 115%, rgba(72, 48, 36, 0.58) 0%, transparent 74%),
             #040505
           `,
         }}
@@ -36,16 +36,6 @@ export default function Hero() {
           }}
         />
       </div>
-
-      {/* Atmospheric fog layer */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-2/3 z-0 opacity-40 pointer-events-none"
-        style={{
-          background: `
-            radial-gradient(ellipse 110% 56% at 50% 100%, rgba(72, 48, 36, 0.55) 0%, transparent 68%)
-          `,
-        }}
-      />
 
  
 
