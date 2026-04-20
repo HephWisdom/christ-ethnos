@@ -61,19 +61,17 @@ export default function Hero() {
             className="font-display text-5xl md:text-7xl lg:text-8xl leading-[1.05] text-bone animate-fade-up opacity-0-init"
             style={{ animationFillMode: 'forwards' }}
           >
-            Those seeking
+            Raising All Nations
             <br />
-            <em className="text-ember-300">grace, truth,</em>
-            <br />
-            and belonging
+            for <span className="text-yellow-300">Christ</span>
           </h1>
 
           <p
             className="font-body text-lg md:text-xl text-bone/50 mt-8 max-w-xl mx-auto leading-relaxed animate-fade-up opacity-0-init"
             style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}
           >
-            Where ancient faith meets present-day life. A family
-            rooted in love, open to all who seek.
+            Jesus Christ the same yesterday, and to day, and for ever.
+            Hebrews 13:8
           </p>
 
           <div
