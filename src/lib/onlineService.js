@@ -1,6 +1,6 @@
 const onlineServiceUrl = ''
 const platform = 'Zoom'
-const serviceTime = 'Saturdays and Sundays • 11:00 PM GMT'
+const serviceTime = 'Saturdays and Sundays • 10:30 PM GMT'
 const host = 'Online Welcome Team'
 
 export function getOnlineServiceConfig() {
