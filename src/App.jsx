@@ -53,7 +53,6 @@ function HomeFlow() {
       <FAQ />
       <PrayerRequestSection />
       <ConnectSection />
-      <Footer />
     </>
   )
 }
@@ -132,6 +131,7 @@ export default function App() {
         {route === 'events' && <Events />}
         {route === 'give' && <Give />}
         {route === 'admin' && <AdminPortal />}
+        {route !== 'admin' && <Footer />}
       </div>
     </div>
   )
