@@ -1,8 +1,38 @@
 import scriptureImage from '../assets/scripture-image.png'
+import logo from '../assets/logo-2.webp'
+import { getOnlineServiceConfig } from '../lib/onlineService.js'
 import { getWhatsAppHref, isWhatsAppConfigured } from '../lib/whatsapp.js'
 
 const whatsappHref = getWhatsAppHref()
 const whatsappReady = isWhatsAppConfigured()
+const onlineService = getOnlineServiceConfig()
+
+const footerSections = [
+  {
+    title: 'Explore',
+    links: [
+      { label: 'Home', href: '#home' },
+      { label: 'About', href: '#about' },
+      { label: 'Sermons', href: '#sermons' },
+      { label: 'Events', href: '#events' },
+    ],
+  },
+  {
+    title: 'Next Steps',
+    links: [
+      { label: 'Plan a visit', href: '#connect' },
+      { label: 'Prayer request', href: '#prayer' },
+      { label: 'Daily word', href: '#daily-word' },
+      { label: 'Give', href: '#give' },
+    ],
+  },
+]
+
+const contactItems = [
+  { label: 'Online service', value: onlineService.serviceTime },
+  { label: 'Platform', value: onlineService.platform },
+  { label: 'Follow-up', value: whatsappReady ? 'WhatsApp and contact form' : 'Contact form' },
+]
 
 const socialLinks = [
   {
@@ -99,68 +129,156 @@ const socialLinks = [
 ]
 
 export default function Footer() {
+  const year = new Date().getFullYear()
+
   return (
-    <footer className="relative bg-void overflow-hidden">
-      <div className="relative py-32 md:py-48 text-center overflow-hidden">
+    <footer className="relative overflow-hidden border-t border-bone/8 bg-void">
+      <div className="absolute inset-0 pointer-events-none">
         <img
           src={scriptureImage}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover opacity-25 pointer-events-none"
+          className="h-full w-full object-cover opacity-[0.08]"
         />
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background: `
-              radial-gradient(ellipse 84% 60% at 50% 112%, rgba(72, 48, 36, 0.72) 0%, transparent 58%),
-              radial-gradient(ellipse 34% 44% at 50% 8%, rgba(230, 200, 155, 0.2) 0%, rgba(162, 114, 76, 0.1) 44%, transparent 72%)
+              radial-gradient(ellipse 74% 52% at 50% 0%, rgba(188, 140, 97, 0.16) 0%, transparent 60%),
+              linear-gradient(180deg, rgba(4,5,5,0.88), #040505 42%, #040505 100%)
             `,
           }}
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,5,5,0.76),rgba(4,5,5,0.5),rgba(4,5,5,0.82))] pointer-events-none" />
-        <div className="relative z-10 px-6">
-          <p className="meta-label mb-6">Come as you are</p>
-          <h2 className="font-display text-5xl md:text-7xl lg:text-8xl text-bone leading-tight mb-10">
-            Your seat is
-            <br />
-            <em className="text-ember-300">already waiting</em>
-          </h2>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <a href="#connect" className="btn-bracket-glow text-base px-8 py-3 inline-block">
-              (plan your visit)
+      </div>
+
+      <div className="relative mx-auto max-w-[1400px] px-6 py-16 md:px-16 md:py-20">
+        <div className="grid gap-12 border-b border-bone/10 pb-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+          <div>
+            <p className="meta-label">Christ Ethnos Global Ministries</p>
+            <h2 className="mt-5 max-w-3xl font-display text-4xl leading-tight text-bone md:text-6xl">
+              A family of faith,
+              <br className="hidden sm:block" />
+              <em className="text-ember-300"> open to every nation.</em>
+            </h2>
+          </div>
+
+          <div className="flex flex-col gap-5 lg:items-end lg:text-right">
+            <p className="max-w-lg font-body text-base leading-relaxed text-bone/48">
+              Join the online fellowship, ask for prayer, or connect with the welcome team.
+              There is a place for you here.
+            </p>
+            <div className="flex flex-wrap gap-3 lg:justify-end">
+              <a href="#connect" className="btn-bracket-glow">
+                (connect with us)
+              </a>
+              <a href="#give" className="btn-bracket">
+                (give)
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-10 py-12 md:grid-cols-2 lg:grid-cols-[1.25fr_0.7fr_0.7fr_1fr]">
+          <div className="max-w-sm">
+            <a
+              href="#home"
+              className="inline-flex items-center gap-4 transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember-300/70"
+              aria-label="Christ Ethnos Global Ministries home"
+            >
+              <img
+                src={logo}
+                alt=""
+                aria-hidden="true"
+                className="h-14 w-auto"
+              />
+              <span className="font-label text-sm uppercase tracking-[0.24em] text-bone">
+                Christ Ēthnos
+              </span>
             </a>
-            <a href="#prayer" className="btn-bracket text-base px-8 py-3 inline-block">
-              (share a prayer request)
+            <p className="mt-6 font-body text-base leading-relaxed text-bone/45">
+              More than a church, Christ Ēthnos is a family gathered around worship,
+              prayer, Scripture, and graceful community.
+            </p>
+
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              {socialLinks.map((link) => {
+                const label = link.comingSoon ? `${link.name} coming soon` : link.name
+                const className = `group flex h-10 w-10 items-center justify-center rounded-full border border-bone/12 bg-bone/[0.035] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(255,255,255,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember-300/70 sm:h-11 sm:w-11 ${link.accentClass}`
+
+                if (link.comingSoon) {
+                  return (
+                    <span
+                      key={link.name}
+                      aria-label={label}
+                      title={label}
+                      aria-disabled="true"
+                      className={className}
+                    >
+                      {link.icon}
+                      <span className="sr-only">{label}</span>
+                    </span>
+                  )
+                }
+
+                return (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    aria-label={label}
+                    title={label}
+                    target={link.external ? '_blank' : undefined}
+                    rel={link.external ? 'noreferrer' : undefined}
+                    className={className}
+                  >
+                    {link.icon}
+                    <span className="sr-only">{label}</span>
+                  </a>
+                )
+              })}
+            </div>
+          </div>
+
+          {footerSections.map((section) => (
+            <nav key={section.title} aria-label={section.title}>
+              <h3 className="meta-label text-bone/55">{section.title}</h3>
+              <ul className="mt-5 space-y-3">
+                {section.links.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      className="font-body text-base text-bone/48 transition-colors hover:text-ember-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember-300/70"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
+
+          <div>
+            <h3 className="meta-label text-bone/55">Visit & Contact</h3>
+            <dl className="mt-5 space-y-4">
+              {contactItems.map((item) => (
+                <div key={item.label} className="border-b border-bone/8 pb-4 last:border-b-0 last:pb-0">
+                  <dt className="font-label text-xs uppercase tracking-[0.22em] text-bone/28">{item.label}</dt>
+                  <dd className="mt-1 font-body text-base leading-relaxed text-bone/52">{item.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <a href="#connect" className="mt-6 inline-block font-label text-xs uppercase tracking-[0.22em] text-ember-200 transition-colors hover:text-bone">
+              Send a message
             </a>
           </div>
         </div>
-      </div>
 
-      <div className="border-t border-bone/8 py-8 px-6 md:px-16">
-        <div className="max-w-[1400px] mx-auto flex flex-col items-center justify-between gap-5 md:flex-row md:gap-8">
-          <span className="text-center font-label tracking-[0.3em] text-xs text-bone/30 uppercase md:text-left">
-            Christ Ēthnos
-          </span>
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
-            {socialLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href || undefined}
-                aria-label={link.comingSoon ? `${link.name} coming soon` : link.name}
-                title={link.comingSoon ? `${link.name} coming soon` : link.name}
-                target={link.external ? '_blank' : undefined}
-                rel={link.external ? 'noreferrer' : undefined}
-                aria-disabled={link.comingSoon ? 'true' : undefined}
-                className={`group flex h-10 w-10 items-center justify-center rounded-full border border-bone/12 bg-bone/[0.03] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(255,255,255,0.08)] sm:h-11 sm:w-11 ${link.accentClass}`}
-              >
-                {link.icon}
-                <span className="sr-only">{link.comingSoon ? `${link.name} coming soon` : link.name}</span>
-              </a>
-            ))}
+        <div className="flex flex-col gap-4 border-t border-bone/10 pt-7 text-bone/28 md:flex-row md:items-center md:justify-between">
+          <p className="font-body text-sm">
+            © {year} Christ Ethnos Global Ministries. All rights reserved.
+          </p>
+          <div className="flex flex-wrap gap-x-6 gap-y-2 font-label text-xs uppercase tracking-[0.2em]">
+            <a href="#home" className="transition-colors hover:text-bone">Back to top</a>
           </div>
-          <span className="text-center font-body text-xs text-bone/20 italic md:text-right">
-            {new Date().getFullYear()} · All are welcome
-          </span>
         </div>
       </div>
     </footer>
